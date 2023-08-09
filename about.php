@@ -67,8 +67,9 @@ Carla Regine R. Hernandez
             <input type="email" id="sender_email" name="sender_email" required><br>
 
             <!-- Admin's Email Dropdown -->
-            <label for="elder_email"> Choose an Admin to contact: </label><br>
-            <select id="elder_email" name="elder_email" required>
+            <label for="admin_email"> Choose an Admin to contact: </label><br> 
+            <select id="admin_email" name="admin_email" required>
+                <option value="" disabled selected>Select an Admin</option>
                 <option value="raymondhernandez@khronos.pro">Raymond Hernandez</option>
                 <option value="carlahernandez@khronos.pro">Carla Hernandez</option>
             </select><br>

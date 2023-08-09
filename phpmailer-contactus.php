@@ -24,16 +24,16 @@ if ($isMailSent) {
 ?>
     <script type="text/javascript">
         alert("Your message has been sent.");
-        // window.location = "hours.php";
+        window.close();
     </script>
-<?php
+<?php 
 } else {
     echo "Email sending failed. Error: " . error_get_last()['message'];
     echo "<br>" . $to; echo "<br>" . $subject; echo "<br>" . $message; echo "<br>" . $sender_name; echo "<br>" . $sender_email;
 ?>
     <script type="text/javascript">
         alert("There's an error with the mail server. Please contact the admins at raymond@arbhie.com or carla@appsbycarla.com.");
-        // window.location = "hours.php";
+        window.close();
     </script>
 <?php
 }
