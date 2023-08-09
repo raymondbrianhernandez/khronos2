@@ -31,6 +31,22 @@
     $elder_phone    = '';
     $carrier        = '';
 
+    // Get the username from the POST request
+    $usernameToCheck = $_POST['user'];
+
+    $sql = "SELECT username FROM logins WHERE username = '$usernameToCheck'";
+
+    $result = $con->query($sql);
+
+    if ($result->num_rows > 0) {
+        // username already exists
+        redirect('../public/registration.php', 'Username already taken');
+        exit; 
+    } else {
+        // username is available
+        echo "Username available";
+    }
+    
     if ( $password1 == $password2 ) {
         $password = password_hash ( $password1, PASSWORD_DEFAULT );
 
