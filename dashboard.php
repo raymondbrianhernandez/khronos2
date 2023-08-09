@@ -24,6 +24,9 @@ $total = $newAddr + $validAddr + $invalidAddr + $blockedAddr;
 
 $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner='.'"'.$_SESSION['owner'].'" AND status="new"')->fetch_row()[0];
 
+$currentCarrier = $_SESSION['carrier'];
+$currentGoal    = $_SESSION['goal'];
+
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +35,7 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
 <head>    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title> Dashboard - Khronos 2 </title>
+    <title> Dashboard - Khronos Pro 2 </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" media="all" href="./stylesheets/charts.min.css" />
     <link rel="stylesheet" media="all" href="./stylesheets/phpvariables.php" />
@@ -70,9 +73,6 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
         <?php include("../private/shared/navigation.php"); ?>
     
         <div class="parent">
-            <!-- <div class="leftborder"></div>
-            <div class="rightborder"></div> -->
-
             <div class="mainbody">
                 <!-- Start: Login Form Basic -->
                 <div class="container">
@@ -97,8 +97,6 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
                     </div>
                 </div>
 
-                
-                
                 <div class="row d-flex justify-content-center">
                     <h4><b> Territories Summary </b></h4>
                     <!-- PIE CHART -->
@@ -125,8 +123,7 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
                                     );
                                 <?php } ?>
                             }
-                        </style>
-                    
+                        </style>    
                     </div>
                     <div style="text-align:center">
                         <br>
@@ -245,7 +242,7 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
                     <br>
                 </div>
                 <!-- END ADD NEW RECORD -->
-
+ 
                 <!-- ACCOUNT INFORMATION -->
                 <button type="button" class="collapsible">
                     <h5><b> Click to view your account information </b></h5>
@@ -255,8 +252,8 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
                         <br>
                         <p><span><b> Name: </b></span><?= $_SESSION['owner']; ?></p>
                         <p><span><b> Username: </b></span><?= $_SESSION['username']; ?></p>
-                        <p><span><b> Goal: </b></span><?= $_SESSION['goal']; ?></p>
-                        <p><b> Change goal: </b><span style="font-size:medium; color:red;">
+                        <p><span><b> Current Task/Goal: </b></span><?= $_SESSION['goal']; ?></p>
+                        <p><b> Update Task/Goal: </b><span style="font-size:medium; color:red;">
                         </p>
                         <p>
                             <?php include ( 'goals.php' ); ?>
@@ -286,15 +283,15 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
                                 <label for="carrier"> Phone Carrier: </label>
                             </div>
                             <div class="col-75">
-                                <select name="carrier">
-                                    <option value=""> </option>    
-                                    <option value="@msg.fi.google.com"> Google Fi </option>
-                                    <option value="@vtext.com"> Verizon </option>
-                                    <option value="@txt.att.net"> AT&T </option>
-                                    <option value="@tmomail.net"> T-Mobile </option>
-                                    <option value="@messaging.sprintpcs.com"> Sprint </option>
-                                </select>
-                                <p style="color:red;font-size:14px;"><i> Verizon have delays. </i></p>
+                            <select name="carrier">
+                                <option value="" <?= $currentCarrier == '' ? 'selected' : ''; ?>></option>    
+                                <option value="@msg.fi.google.com" <?= $currentCarrier == '@msg.fi.google.com' ? 'selected' : ''; ?>>Google Fi</option>
+                                <option value="@vtext.com" <?= $currentCarrier == '@vtext.com' ? 'selected' : ''; ?>>Verizon</option>
+                                <option value="@txt.att.net" <?= $currentCarrier == '@txt.att.net' ? 'selected' : ''; ?>>AT&T/Cingular</option>
+                                <option value="@tmomail.net" <?= $currentCarrier == '@tmomail.net' ? 'selected' : ''; ?>>T-Mobile</option>
+                                <option value="@messaging.sprintpcs.com" <?= $currentCarrier == '@messaging.sprintpcs.com' ? 'selected' : ''; ?>>Sprint</option>
+                            </select>
+                                <p style="color:red;font-size:14px;"><b>NOTE:</b><i> Verizon have delays. </i></p>
                             </div>
                             
                         </div>
@@ -306,25 +303,6 @@ $accountOwner = $con->query('SELECT COUNT(status) FROM householders WHERE owner=
                             </div>
                             <div class="col-75">
                                 <input type="text" name="email" value=<?= $_SESSION['email']; ?> >
-                            </div>
-                        </div>
-
-                        <p style="text-align:center"><b> Change password </b></p>
-                        <div class="row">
-                            <div class="col-25">
-                                <label for="owner-password"> Type New Password: </label>
-                            </div>
-                            <div class="col-75">
-                                <input type="password" name="owner-password" value=<?= $_SESSION['password']; ?> required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-25">
-                                <label for="owner-password2"> Re-type Password: </label>
-                            </div>
-                            <div class="col-75">
-                                <input type="password" name="owner-password2" value=<?= $_SESSION['password']; ?> required>
                             </div>
                         </div>
 
