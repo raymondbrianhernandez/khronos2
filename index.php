@@ -13,7 +13,7 @@ Revision History:
      6/7/2023 - Project Started, Login page started (Raymond)
      8/1/2023 - Template Khronos 1 to Khronos 2 (Raymond)
      8/3/2023 - Registration page now has security questions for more secured login (Carla)
-     8/9/2023 - I'm a big girl now, I use github now! (Carla)
+     8/9/2023 - Update (Carla)
 -->
 
 <?php
