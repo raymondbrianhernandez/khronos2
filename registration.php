@@ -197,6 +197,39 @@ Carla Regine R. Hernandez
       }
     }
 </script>
+<script>
+    function validation() {
+        // Get the user input value
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password1 = document.getElementById('password1').value;
+    
+        // Use a regular expression to check if the input contains any numbers
+        // /\d/ = digit from 0 to 9
+        const containsNumbers = /\d/.test(name);
+
+        // If the input contains numbers, show an error message and prevent form submission
+        if (containsNumbers) {
+            alert("Full name should not contain numbers.");
+            return false;
+        }
+
+        const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        if (!checkEmail) {
+            alert("Email is invalid.");
+            return false;
+        }
+
+        // Check password length
+        if (password1.length < 8) {
+            alert("Password must be at least 8 characters long.");
+            return false;
+        }
+        // If the input is valid, allow form submission
+        return true;
+    }
+</script>
 
 </body>
 </html>
