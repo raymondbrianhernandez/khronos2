@@ -23,6 +23,59 @@ Carla Regine R. Hernandez
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" media="all" href="./stylesheets/styles.min.css"/>
     <link rel="stylesheet" media="all" href="./stylesheets/animatedbackground.css"/>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+
+        label {
+            /* font-weight: bold; */
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea { 
+            resize: vertical;
+        }
+
+        button {
+            background-color: blue;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background-color: #ffc200;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -35,8 +88,8 @@ Carla Regine R. Hernandez
     
     <div class="blog-title">
         <br>
-        <h2> About Khronos Pro </h2>
-        <p> ver. 2.0.1 </p>
+        <h2> About Khronos Pro ver. 2.0.1 </h2>
+        <p> PHP 8.0.1 | MySQL 5.7.44 </p>
     </div>
 
     <div class="about-us">
@@ -57,33 +110,24 @@ Carla Regine R. Hernandez
             </li>
         </ul>
 
+        <h3>Send us a message</h3> 
+
         <form action="phpmailer-contactus.php" method="post">
-            <!-- Sender's Name -->
-            <label for="sender_name"> Your Name: </label><br>
-            <input type="text" id="sender_name" name="sender_name" required><br>
-
-            <!-- Sender's Email -->
-            <label for="sender_email"> Your E-mail: </label><br>
-            <input type="email" id="sender_email" name="sender_email" required><br>
-
-            <!-- Admin's Email Dropdown -->
-            <label for="admin_email"> Choose an Admin to contact: </label><br> 
+            <label for="sender_name">Your Name:</label>
+            <input type="text" id="sender_name" name="sender_name" required>
+            <label for="sender_email">Your E-mail:</label>
+            <input type="email" id="sender_email" name="sender_email" required>
+            <label for="admin_email">Choose an Admin to contact:</label>
             <select id="admin_email" name="admin_email" required>
                 <option value="" disabled selected>Select an Admin</option>
                 <option value="raymondhernandez@khronos.pro">Raymond Hernandez</option>
                 <option value="carlahernandez@khronos.pro">Carla Hernandez</option>
-            </select><br>
-
-            <!-- Subject -->
-            <label for="subject"> Subject: </label><br>
-            <input type="text" id="subject" name="subject" value="" ><br>
-
-            <!-- Message -->
-            <label for="message"> Message: </label><br>
-            <textarea id="message" name="message" rows="12" cols="auto"><?= $text_msg ?></textarea><br>
-
-            <!-- Submit Button -->
-            <button id="goldbutton" type="submit"> Send Message </button>
+            </select>
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" value="" required>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="6" cols="40"></textarea>
+            <button id="goldbutton" type="submit">Send Message</button>
         </form>
 
 
