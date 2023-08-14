@@ -78,19 +78,20 @@ Carla Regine R. Hernandez
                                     </svg>
                                 </div>
 
-                                <form name="form" class="text-center" action="../private/authentication.php" method="POST">
+                                <form name="form" class="text-center" action="../private/authenticateEmail.php" method="POST">
                                     <div class="mb-3">
-                                        <input type="text" class="form-control" type="user" name="user" >
-                                        <b><label for="user" style="text-align:left"> Username: </label></b>
+                                        <input class="form-control" type="email" name="email" required>
+                                        <b><label for="email" style="text-align:left"> Email: </label></b>
                                     </div>
                                     
                                     <div class="mb-3">
                                         <button class="btn btn-primary d-block w-100" type="submit"> Reset Password </button>
                                     </div>
                                     <p class="text-muted" style="text-align:center; color:white">
-                                        Need assistance? Contact the admins <a href='about.php'> here. </a>
+                                        Need assistance? Contact the admins <a href="javascript:void(0);" onclick="openAboutUsWindow()"> here. </a>
                                     </p>
                                 </form>
+
                             </div>
                         </div>
                     </div>     
