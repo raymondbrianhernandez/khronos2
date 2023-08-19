@@ -20,15 +20,15 @@
             <ul class="navbar-nav ms-auto">
                 <!-- <li class="nav-item"><a class="nav-link active" href="login.php"> Login </a></li> -->
                 <!-- <li class="nav-item"><a class="nav-link active" href="registration.php"> Register </a></li> -->
-                <li class="nav-item"><a class="nav-link active" href="dashboard.php"> Dashboard </a></li>
-                <li class="nav-item"><a class="nav-link active" href="territories.php"> Territories </a></li>
-                <li class="nav-item"><a class="nav-link active" href="territories.php"> Address Book </a></li>
-                <li class="nav-item"><a class="nav-link active" href="assignments.php"> TMS Manager </a></li>
-                <li class="nav-item"><a class="nav-link active" href="hours.php"> Reports </a></li>
-                <li class="nav-item"><a class="nav-link active" href="journal.php"> Notes </a></li> 
-                <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li>
+                <li class="nav-item"><a class="nav-link active" href="dashboard"> Dashboard </a></li>
+                <li class="nav-item"><a class="nav-link active" href="territories"> Territories </a></li>
+                <li class="nav-item"><a class="nav-link active" href="territories"> Address Book </a></li>
+                <li class="nav-item"><a class="nav-link active" href="assignments"> TMS Manager </a></li>
+                <li class="nav-item"><a class="nav-link active" href="hours"> Reports </a></li>
+                <li class="nav-item"><a class="nav-link active" href="journal"> Notes </a></li> 
+                <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                 <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
-                <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li>
+                <li class="nav-item"><a class="nav-link active" href="logout"> Sign out </a></li>
             </ul>
         </div>
     </div>
@@ -37,30 +37,30 @@
 
 <script>
     function openDonationWindow() {
-      var url = "donate.php";
+      var url = "donate";
       var width = 600;
       var height = 400;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
-        newWindow.focus();
+      if ( newWindow ) {
+        newWindow.focus(); 
       }
     }
 </script>
 <script>
     function openAboutUsWindow() {
-      var url = "about.php";
+      var url = "about";
       var width = 600;
       var height = 400;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }

@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php 
+    session_start(); 
+    if ( $_SESSION['email_verified'] == false ) {
+        header ( "Location: resetpassword" );
+    };
+    // var_dump($_SESSION['email_verified']);
+    // var_dump($_SESSION['questions_verified']);    
+?>
 <!--
 ██╗  ██╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗    ██████╗     ██████╗ 
 ██║ ██╔╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝    ╚════██╗   ██╔═████╗
@@ -50,7 +57,7 @@ Carla Regine R. Hernandez
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="login.php"> Login </a></li>
                     <li class="nav-item"><a class="nav-link active" href="registration.php"> Register </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li>
+                    <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                     <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
                     <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
                 </ul>
@@ -79,7 +86,7 @@ Carla Regine R. Hernandez
                                     </svg>
                                 </div>
 
-                                <form name="form" class="text-center" action="../private/authenticateSecQuestion1.php" method="POST">
+                                <form name="form" class="text-center" action="../private/authenticateSecQuestions" method="POST">
                                     <div class="mb-3">
                                         <p><b>Please answer these security questions to verify your identity.</b></p>
                                         <hr>
@@ -127,7 +134,7 @@ Carla Regine R. Hernandez
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openDonationWindow() {
-      var url = "donate.php";
+      var url = "donate";
       var width = 800;
       var height = 600;
       
@@ -135,22 +142,22 @@ Carla Regine R. Hernandez
       var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }
 </script>
 <script>
     function openAboutUsWindow() {
-      var url = "about.php";
+      var url = "about";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }

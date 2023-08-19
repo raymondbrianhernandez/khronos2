@@ -11,7 +11,7 @@ Carla Regine R. Hernandez
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 
 <head>
     <meta charset="utf-8">
@@ -48,8 +48,9 @@ Carla Regine R. Hernandez
                 <div class="collapse navbar-collapse" id="navcol-5">
                     <ul class="navbar-nav ms-auto">
                         <!-- <li class="nav-item"><a class="nav-link active" href="login.php"> Login </a></li> -->
-                        <li class="nav-item"><a class="nav-link active" href="login.php"> Login </a></li>
-                        <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li>
+                        <li class="nav-item"><a class="nav-link active" href="login"> Login </a></li>
+                        <li class="nav-item"><a class="nav-link active" href="resetpassword"> Reset Password </a></li>
+                        <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                         <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
                         <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
                     </ul>
@@ -169,65 +170,32 @@ Carla Regine R. Hernandez
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openDonationWindow() {
-      var url = "donate.php";
+      var url = "donate";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }
 </script>
 <script>
     function openAboutUsWindow() {
-      var url = "about.php";
+      var url = "about";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
-    }
-</script>
-<script>
-    function validation() {
-        // Get the user input value
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const password1 = document.getElementById('password1').value;
-    
-        // Use a regular expression to check if the input contains any numbers
-        // /\d/ = digit from 0 to 9
-        const containsNumbers = /\d/.test(name);
-
-        // If the input contains numbers, show an error message and prevent form submission
-        if (containsNumbers) {
-            alert("Full name should not contain numbers.");
-            return false;
-        }
-
-        const checkEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-        if (!checkEmail) {
-            alert("Email is invalid.");
-            return false;
-        }
-
-        // Check password length
-        if (password1.length < 8) {
-            alert("Password must be at least 8 characters long.");
-            return false;
-        }
-        // If the input is valid, allow form submission
-        return true;
     }
 </script>
 

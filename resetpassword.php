@@ -1,3 +1,8 @@
+<?php
+    session_start();
+    $_SESSION['email_verified']     = false;
+    $_SESSION['questions_verified'] = false;
+?>
 <!--
 ██╗  ██╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗    ██████╗     ██████╗ 
 ██║ ██╔╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝    ╚════██╗   ██╔═████╗
@@ -47,9 +52,9 @@ Carla Regine R. Hernandez
                 </button>
             <div class="collapse navbar-collapse" id="navcol-5">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="login.php"> Login </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="registration.php"> Register </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li>
+                    <li class="nav-item"><a class="nav-link active" href="login"> Login </a></li>
+                    <li class="nav-item"><a class="nav-link active" href="registration"> Register </a></li>
+                    <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                     <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
                     <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
                 </ul>
@@ -78,7 +83,7 @@ Carla Regine R. Hernandez
                                     </svg>
                                 </div>
 
-                                <form name="form" class="text-center" action="../private/authenticateEmail.php" method="POST">
+                                <form name="form" class="text-center" action="../private/authenticateEmail" method="POST">
                                     <div class="mb-3">
                                         <input class="form-control" type="email" name="email" required>
                                         <b><label for="email" style="text-align:left"> Email: </label></b>
@@ -118,30 +123,30 @@ Carla Regine R. Hernandez
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openDonationWindow() {
-      var url = "donate.php";
+      var url = "donate";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }
 </script>
 <script>
     function openAboutUsWindow() {
-      var url = "about.php";
+      var url = "about";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }

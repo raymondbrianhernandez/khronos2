@@ -11,7 +11,7 @@ function redirect ( $url, $message ) {
             </script>";
 }
 
-$email = $_POST['email'];  
+$email = $_SESSION['email'] = $_POST['email'];  
 
 $stmt = $con->prepare ( "SELECT * FROM logins WHERE email = ?" );
 $stmt->bind_param ( "s", $email) ;
@@ -29,10 +29,11 @@ if ( $row ) {
     $_SESSION['security2']   = $row['security_questions2'];
     $_SESSION['answer2']     = $row['security_answer2'];
 
-    header ( "Location: ../public/resetpassword2.php" );
+    $_SESSION['email_verified'] = true;
+    header ( "Location: ../public/resetpassword2" );
 
 } else { 
-    redirect ( "../public/resetpassword.php", "This email is not registered." );
+    redirect ( "../public/resetpassword", "This email is not registered." );
 }
 
 $stmt->close();

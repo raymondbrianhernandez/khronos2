@@ -16,7 +16,7 @@ $headers .= "Reply-To: " . $sender_email . "\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion();
 
 $isMailSent = mail($to, $subject, $message, $headers);
-if ($isMailSent) {
+if ( $isMailSent ) {
 ?>
     <script type="text/javascript">
         alert("Your message has been sent.\n\nTo: <?php echo $to; ?>\nSubject: <?php echo $subject; ?>\nMessage: <?php echo $message; ?>\nSender Name: <?php echo $sender_name; ?>\nSender Email: <?php echo $sender_email; ?>");
@@ -29,7 +29,7 @@ if ($isMailSent) {
 ?>
     <script type="text/javascript">
         alert("There's an error with the mail server. Please contact the admins at raymond@arbhie.com or carla@appsbycarla.com.");
-        window.location = "about.php";
+        window.location = "about";
     </script>
 <?php
 }

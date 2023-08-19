@@ -1,4 +1,11 @@
-<?php session_start(); ?>
+<?php 
+    session_start(); 
+    if ( $_SESSION['email_verified'] != true || $_SESSION['questions_verified'] != true ) {
+        header ( "Location: resetpassword" );
+    };   
+    // var_dump($_SESSION['email_verified']);
+    // var_dump($_SESSION['questions_verified']);
+?>
 <!--
 ██╗  ██╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗    ██████╗     ██████╗ 
 ██║ ██╔╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝    ╚════██╗   ██╔═████╗
@@ -50,7 +57,7 @@ Carla Regine R. Hernandez
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="login.php"> Login </a></li>
                     <li class="nav-item"><a class="nav-link active" href="registration.php"> Register </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li>
+                    <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                     <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
                     <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
                 </ul>
@@ -79,16 +86,21 @@ Carla Regine R. Hernandez
                                     </svg>
                                 </div>
 
-                                <form name="form" class="text-center" action="../private/authenticateEmail.php" method="POST">
+                                <form name="form" class="text-center" action="../private/authenticateNewPassword" method="POST">
                                     <div class="mb-3">
-                                        <p><b>Please answer these security questions to verify your identity.</b></p>
-                                        <p><?= $_SESSION['security1'] . "?"; ?> </p>
-                                        <input class="form-control" type="text" name="security_answer1" required>
-                                        <b><label for="security_answer1" style="text-align:left"> Answer: </label></b>
+                                        
+            
+                                        <input class="form-control" type="password" name="password1" required>
+                                        <b><label for="password1" style="text-align:left"> New Password: </label></b>
+                                        <hr>
+                                        
+                                        <input class="form-control" type="password" name="password2" required>
+                                        <b><label for="password2" style="text-align:left"> Re-type New Password: </label></b>
+                                        <hr>
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <button class="btn btn-primary d-block w-100" type="submit"> Next Question </button>
+                                        <button class="btn btn-primary d-block w-100" type="submit"> Update Password  </button>
                                     </div>
                                     <p class="text-muted" style="text-align:center; color:white">
                                         Need assistance? Contact the admins <a href="javascript:void(0);" onclick="openAboutUsWindow()"> here. </a>
@@ -121,27 +133,27 @@ Carla Regine R. Hernandez
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openDonationWindow() {
-      var url = "donate.php";
+      var url = "donate";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }
 </script>
 <script>
     function openAboutUsWindow() {
-      var url = "about.php";
+      var url = "about";
       var width = 800;
       var height = 600;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
       if (newWindow) {

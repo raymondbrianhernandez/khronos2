@@ -1,3 +1,11 @@
+<?php 
+    include "../private/db_config.php";
+    include "debug.php";
+    $phpVersion = phpversion();
+    $mysqlVersion = $con->get_server_info();
+    $apacheVersion = (isset($_SERVER['SERVER_SOFTWARE'])) ? $_SERVER['SERVER_SOFTWARE'] : 'Apache version not found'; 
+?>
+
 <!--
 ██╗  ██╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗    ██████╗     ██████╗ 
 ██║ ██╔╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝    ╚════██╗   ██╔═████╗
@@ -88,8 +96,7 @@ Carla Regine R. Hernandez
     
     <div class="blog-title">
         <br>
-        <h2> About Khronos Pro ver. 2.0.1 </h2>
-        <p> PHP 8.0.1 | MySQL 5.7.44 </p>
+        <h3> Support Khronos PRO 2 by Donations/Volunteering </h3>
     </div>
 
     <div class="about-us">
@@ -110,9 +117,28 @@ Carla Regine R. Hernandez
             </li>
         </ul>
 
-        <h3>Send us a message</h3> 
+        <p>
+            While we're proud to offer Khronos PRO 2 and its resources entirely for free, 
+            it's worth noting that the hosting services, database maintenance, and domain parking are not without cost.
+            These expenses are generously covered by dedicated admins/volunteers and want to keep this 
+            web application running smoothly for everyone.
+        </p>
+        <p>
+            If you've found value in what we offer and wish to contribute, your support would make 
+            a significant difference. A donation, no matter how small, can help ensure the continued 
+            availability and improvement of Khronos Pro 2.
+        </p>
+        <p>
+            If you're interested in contributing, you can donate via:
+        </p>
 
-        <form action="phpmailer-contactus.php" method="post">
+        <div style="text-align:center;">
+            <a href="https://www.paypal.com/donate/?hosted_button_id=SJ5XC4AQQFKFU"><img src="../img/paypal.png" alt="PayPal" height="100px" /></a>
+            <a href="https://www.venmo.com/u/doraemon23"><img src="../img/venmo.png" alt="Venmo" height="100px" /></a><br><hr>
+            <!-- <h3>Send us a message</h3>  -->
+        </div>
+
+        <!-- <form action="phpmailer-contactus.php" method="post">
             <label for="sender_name">Your Name:</label>
             <input type="text" id="sender_name" name="sender_name" required>
             <label for="sender_email">Your E-mail:</label>
@@ -128,12 +154,18 @@ Carla Regine R. Hernandez
             <label for="message">Message:</label>
             <textarea id="message" name="message" rows="6" cols="40"></textarea>
             <button id="goldbutton" type="submit">Send Message</button>
-        </form>
-
-
+        </form> -->
     </div>
-
-
+    
+    <div class="technical">
+        <h4>Technical Specs:</h4>
+        <p>PHP <?= $phpVersion ?> </p>
+        <p>MySQL <?= $mysqlVersion ?></p>
+        <p>Apache <?= $apacheVersion ?></p>
+        <p>HTML5 | Bootstrap v5.2.2</p>
+        <p>Chart.js v2.8.0</p>
+    </div>
+        
     <footer>
     <!-- Start: Footer Basic -->
     <footer class="text-center">

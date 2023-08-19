@@ -35,17 +35,23 @@ Carla Regine R. Hernandez
     
     <div class="blog-title">
         <br>
-        <h2> Donate </h2>
+        <h3> Support Khronos Pro 2 by Donations/Volunteering </h3>
     </div>
 
     <div class="donations">
         <p>
-            This web application is designed for pioneers by pioneers. It's a tool for organizing
-            house-to-house records, logging hours, jotting down essential notes, and seamlessly managing JW.org 
-            research links that can be accessed securely online.  If you have experience in 
-            <i><u> Mobile Apps Development (Android & IOS), HTML5, CSS, PHP, JQuery, Node.JS, Google APIs, and/or MySQL </u></i> 
-            and want to collaborate with us to make this app better and more user-friendly please contact 
-            any of the admins at:
+            While we're proud to offer Khronos PRO 2 and its resources entirely for free, 
+            it's worth noting that the hosting services, database maintenance, and domain are not without cost.
+            These expenses are generously covered by dedicated volunteers and want to keep this 
+            web application running smoothly for everyone.
+        </p>
+        <p>
+            If you've found value in what we offer and wish to contribute, your support would make 
+            a significant difference. A donation, no matter how small, can help ensure the continued 
+            availability and improvement of Khronos Pro 2.
+        </p>
+        <p>
+            If you're interested in contributing, you can donate via:
         </p>
     </div>
 

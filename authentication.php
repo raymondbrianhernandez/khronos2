@@ -2,7 +2,7 @@
 
 // 8/4/2023 - added password hashing (Raymond Hernandez)
 
-include ( '../public/debug.php' );
+// include ( '../public/debug.php' );
 session_start();      
 include ( 'db_config.php' ); 
 
@@ -49,10 +49,10 @@ if ( $row && password_verify ( $password, $row['password'] ) ) {
 
     $_SESSION['service_year'] = $currentDate >= $startDate && $currentDate <= $endDate ? $curr_year : $prev_year;
 
-    redirect ( "../public/dashboard.php", "Welcome back ".$_SESSION['owner']."!" );
+    redirect ( "../public/dashboard", "Welcome back ".$_SESSION['owner']."!" );
 
 } else { 
-    redirect ( "../public/login.php", "Incorrect username or password." );
+    redirect ( "../public/login", "Incorrect username or password." );
 }
 $stmt->close();
 

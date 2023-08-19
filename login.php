@@ -47,9 +47,9 @@ Carla Regine R. Hernandez
                 </button>
             <div class="collapse navbar-collapse" id="navcol-5">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="resetpassword.php"> Reset Password </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="registration.php"> Register </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li>
+                    <li class="nav-item"><a class="nav-link active" href="resetpassword"> Reset Password </a></li>
+                    <li class="nav-item"><a class="nav-link active" href="registration"> Register </a></li>
+                    <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                     <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
                     <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
                 </ul>
@@ -78,7 +78,7 @@ Carla Regine R. Hernandez
                                     </svg>
                                 </div>
 
-                                <form name="form" class="text-center" action="../private/authentication.php" method="POST">
+                                <form name="form" class="text-center" action="../private/authentication" method="POST">
                                     <div class="mb-3">
                                         <input type="text" class="form-control" type="user" name="user" >
                                         <b><label for="user" style="text-align:left"> Username: </label></b>
@@ -96,10 +96,10 @@ Carla Regine R. Hernandez
                                         <button class="btn btn-primary d-block w-100" type="submit"> Login </button>
                                     </div>
                                     <p class="text-muted" style="text-align:center; color:white">
-                                    Forgot password? Reset password <a href='resetpassword.php'> here. </a>
+                                    Forgot password? Reset password <a href='resetpassword'> here. </a>
                                     </p>
                                     <p class="text-muted" style="text-align:center; color:white">
-                                        Not registered yet? Create a free account <a href='registration.php'> here </a>
+                                        Not registered yet? Create a free account <a href='registration'> here </a>
                                     </p>
                                 </form>
                             </div>
@@ -133,30 +133,30 @@ Carla Regine R. Hernandez
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openDonationWindow() {
-      var url = "donate.php";
-      var width = 800;
-      var height = 600;
+      var url = "donate";
+      var width = 600;
+      var height = 400;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }
 </script>
 <script>
     function openAboutUsWindow() {
-      var url = "about.php";
-      var width = 800;
-      var height = 600;
+      var url = "about";
+      var width = 600;
+      var height = 400;
       
       // Open the new window with specified width and height
-      var newWindow = window.open(url, "_blank", "width=" + width + ",height=" + height);
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
       
       // Focus the new window (optional)
-      if (newWindow) {
+      if ( newWindow ) {
         newWindow.focus();
       }
     }
