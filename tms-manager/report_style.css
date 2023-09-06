@@ -1,0 +1,29 @@
+/* Set the dimensions of the page to the size of A4 paper */
+body {
+    width: 210mm;
+    height: 297mm;
+    /* font-family: Arial, sans-serif; */
+    font-family: Cambria, Georgia, serif;
+    font-size: 10pt;
+}
+/* Remove margins and padding */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+.center-text{
+    text-align: center;
+}
+.letterhead {
+    line-height: 0.1;
+}
+.report{
+    line-height: 1;
+}
+/* tr:nth-child(odd) {
+    background-color: #F2F2F2;
+} */
+table {
+    width:90%; 
+    margin:0 auto;
+}

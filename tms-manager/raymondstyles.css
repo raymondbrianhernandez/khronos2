@@ -1,0 +1,42 @@
+.boldOption {
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: lightblue;
+}
+
+thead {
+    background-color: black;
+    color: white;
+    text-align: center;
+  }
+
+tr {
+    text-align: center;
+}
+
+select {
+    width: auto;
+  }
+
+table {
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+table {
+    width: 100%;
+    display: block;
+}
+tr {
+    display: flex;
+    flex-direction: column;
+}
+td {
+    width: 100%;
+    display: block;
+}
+}
+  
+ 

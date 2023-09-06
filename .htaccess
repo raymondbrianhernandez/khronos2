@@ -1,0 +1,15 @@
+# Turn on the rewrite engine
+RewriteEngine On
+
+# If the requested URL is not a directory
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# If the requested URL is not a file
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Rewrite the URL to append .php, but only if .php version exists
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([A-Za-z0-9\-/]+)$ $1.php [L]
+
+# Custom error document for 404
+# ErrorDocument 404 https://khronos.pro/public/404.php
