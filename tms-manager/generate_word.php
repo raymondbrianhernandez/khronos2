@@ -1,22 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCLM Report by Khronos Pro 2</title>
-    <link rel="stylesheet" href="report_style.css">
-</head>
-<body>
-
 <?php
+
+header ( "Content-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document" );
+header ( "Content-Disposition: attachment; Filename=OCLM_Schedule.doc" );
+header ( "Content-Type: application/vnd.ms-word; charset=UTF-8" );
+
+echo "<html>";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">";
+echo "<body>";
 
 if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-// include ( '../public/debug.php' );
+//include ( '../public/debug.php' );
 require ( 'db.php' );
+
+mysqli_set_charset ( $con, "utf8" );
 
 $monthPart = explode(" ", $_SESSION['week_select']);
 $congregation = $_SESSION['congregation'];
@@ -31,8 +30,6 @@ if ($language != "Tagalog") {
 
 $song_query = "SELECT * FROM songs WHERE year = YEAR(CURDATE()) AND select_week LIKE '$month%'";
 $song_result = mysqli_query($con, $song_query);
-
-echo "<center><a href='generate_word.php' class='button'>Download as Word Document</center></a>";
 
 if ($song_result) {
     $weekCounter = 0; // Initialize a counter to keep track of the weeks
@@ -125,7 +122,7 @@ if ($song_result) {
 
                 // Main loop of assignments
                 echo "<tr>";
-                echo "  <td style='width:80%'>{$commonData['time']}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$row['part']}</td>";
+                echo "  <td style='width:80%'>" . $commonData['time'] . "&nbsp;&nbsp;&bull;&nbsp;&nbsp;" . $row['part'] . "</td>";
                 if ( $row['assistant'] == " " ) {
                     echo "<td style='width:20%'>{$row['assignee']}</td>";
                 } else {
@@ -200,9 +197,7 @@ if ($song_result) {
 // Close the database connection when you're done
 mysqli_close ( $con );
 
-echo "<center><a href='generate_word.php' class='button'>Download as Word Document</center></a>";
+echo "</body>";
+echo "</html>";
 
 ?>
-
-</body>
-</html>

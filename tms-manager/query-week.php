@@ -1,11 +1,13 @@
 <?php
 
 // SQL query using HEREDOC
+$congregation = mysqli_real_escape_string ( $con, $_SESSION['congregation'] );
 $query = <<<SQL
             SELECT week 
             FROM (
                 SELECT week, MIN(id) as min_id 
                 FROM assignments 
+                WHERE congregation = '$congregation'
                 GROUP BY week
             ) as subquery 
             ORDER BY min_id ASC
@@ -19,7 +21,8 @@ $result = mysqli_query ( $con, $query );
 <form method="post" action="">
     <hr>
     <div style="display: flex; flex-direction: column; align-items: center;">
-        <h6>Select Week to Assign:</h6>
+        <h6><b>Select Week to Assign:</b></h6>
+        <small>(if dropdown is empty, please upload a new JW Workbook)</small>
         <div style="display: flex; justify-content: center; align-items: center;">
             <select name='week_select' style="margin-right: 10px;">
                 <option></option>

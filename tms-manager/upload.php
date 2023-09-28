@@ -1,58 +1,114 @@
+<!--
+██╗  ██╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗    ██████╗     ██████╗ 
+██║ ██╔╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝    ╚════██╗   ██╔═████╗
+█████╔╝ ███████║██████╔╝██║   ██║██╔██╗ ██║██║   ██║███████╗     █████╔╝   ██║██╔██║
+██╔═██╗ ██╔══██║██╔══██╗██║   ██║██║╚██╗██║██║   ██║╚════██║    ██╔═══╝    ████╔╝██║
+██║  ██╗██║  ██║██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝███████║    ███████╗██╗╚██████╔╝
+╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝    ╚══════╝╚═╝ ╚═════╝ 
+June 7, 2023
+Raymond Brian D. Hernandez 
+Carla Regine R. Hernandez
+-->
+
 <?php
 
-include('db.php');
-include('debug.php');
-session_start();
+if ( session_status() !== PHP_SESSION_ACTIVE ) {
+    session_start();
+}
 
-// if ( ! isset ( $_SESSION['login'] ) ) {
-//     header ( 'LOCATION:index.php' ); 
-//     die();
-// }
+include ( 'db.php' );
+include ( '../public/debug.php' );
+include ( 'all_names.php' );
+require ( '../private/secure.php' );
+
+if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'Admin' ) {
+    $authorized = TRUE;
+} else {
+    $authorized = FALSE;
+}
+
+$congregation = $_SESSION['congregation'];
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JW TMS Manager</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="raymondstyles.css">
+
+<head>    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title> Upload JW Workbook - Khronos Pro 2 </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" href="../public/stylesheets/charts.min.css" />
+    <link rel="stylesheet" media="all" href="../public/stylesheets/phpvariables.php" />
+    <link rel="stylesheet" media="all" href="../public/stylesheets/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
+
+<body>
+<header>
+    <?php include ( "../private/shared/navigation.php" ); ?>
     
-<?php include ( 'navigation.php' ) ?>
+    <div style="margin: 0 auto; text-align: center;">
+        <?php include ( 'tms-navigation.php' ) ?>
+    </div>
 
-<center>
-    <form method="post" action="array.php"> <!-- array.php -->
-        <input type="text" style="width:50%" name="url" placeholder="Paste the JW Workbook Link here..."/> &nbsp;
-        <button type="submit">Parse Data</button>&nbsp;
-    </form>
-</center>
+    <div style="text-align:center">
+        <h5><?php echo $congregation ?> Congregation </h5>
+        <h5>Upload JW Workbooks</h5>
+    </div>
 
-<hr>
-<h6>NOTE:</h6>
-<p><i>Parsing and crawling JW Workbooks is slow so please wait till everything loads.</i></p>
-<p><i>Only parse data if the most current workbook is not posted yet.  Please check the weeks below to verify to avoid re-parsing JW website.</p>
-<?php 
+    <!-- THIS PART IS ONLY SHOWN ON SUPER ADMINS AND ADMINS -->
+    <?php if ( $authorized ) { ?>
+        <div style="text-align: center;">
+            <form method="post" action="array.php" onsubmit="showLoader()">
+                <input type="text" style="width:40%;" name="url" placeholder="Paste the JW Workbook Link here..."/> &nbsp;
+                <button type="submit" style="background-color: red;">Fetch and Parse Data</button>&nbsp;
+            </form>
+            <hr>
+            <b>NOTE:</b>
+            <i>Parsing and crawling JW Workbooks is slow so please wait till everything loads.</i></p>
+            <p><i>Only parse data if the most current workbook is not posted yet.  Please check the weeks below to verify to avoid re-parsing JW website.</p>
 
-$query = "SELECT DISTINCT week FROM assignments ORDER BY id ASC";
-$result = mysqli_query ( $con, $query );
-echo "Weeks available to edit ";
-echo "<select name='week_select'></h6></center>";
-echo "<option></option>";
-while ( $row = mysqli_fetch_assoc ( $result ) ) {
-    echo "<option value='" . $row['week'] . "'>" . $row['week'] . "</option>";
-}
-echo "</select>";
+            <?php 
 
-?>
+                $query = "SELECT DISTINCT week FROM assignments WHERE congregation='$congregation' ORDER BY id ASC";
+                $result = mysqli_query ( $con, $query );
 
-<p><br>*Currently only works on English and Tagalog Workbooks. For example, click <a href="https://www.jw.org/tl/library/jw-workbook-para-sa-pulong/" target="_blank">JW Workbook Schedule</a> to grab all assignments.</i></p>
+                echo "Weeks available to edit for <b>" . $congregation . " Congregation:</b><br>";
+                echo "<select name='week_select' style='width:20%;'>";
+                echo "<option value=''>Select a week</option>";
 
-<?php include ( 'footer.php' ); ?>
+                while ( $row = mysqli_fetch_assoc ( $result ) ) {
+                    echo "<option value='" . $row['week'] . "'>" . $row['week'] . "</option>";
+                }
+
+                echo "</select><br>";
+
+            ?>
+
+        </div>
+    
+        <!-- ELSE SHOW THIS PART ONLY -->
+        <?php 
+    
+    } else { 
+        include ( 'public-view.php' );    
+    } 
+    
+    ?>
+    
+    <div style="text-align: center;">
+        <small><br>*Currently only works on English and Tagalog Workbooks. For example, click <a href="https://www.jw.org/tl/library/jw-workbook-para-sa-pulong/" target="_blank">JW Workbook Schedule</a> to grab all assignments.</i></small>
+    </div>
+    <div>
+        <?php include ( "../private/shared/footer.php" ); ?>
+    </div>
+    
+</header>   
+
 </body>
 </html>
 

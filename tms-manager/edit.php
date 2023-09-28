@@ -1,11 +1,15 @@
 <?php
 
+if ( session_status() !== PHP_SESSION_ACTIVE ) {
+    session_start();
+}
+
 include('db.php');
 include('debug.php');
 
 if ( isset ( $_POST['update'] ) ) {
     $id           = $_POST['id'];
-    $congregation = $_POST['congregation'];
+    $congregation = $_SESSION['congregation'];
     $first_name   = $_POST['first_name'];
     $last_name    = $_POST['last_name'];
     $privilege    = $_POST['privilege'];
@@ -31,11 +35,28 @@ mysqli_close ( $con );
 
 ?>
 
+
+
 <form action="edit.php" method="post">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
-    Congregation: <input type="text" name="congregation" value="<?php echo $congregation; ?>"><br><br>
-    First Name: <input type="text" name="first_name" value="<?php echo $first_name; ?>"><br><br>
-    Last Name: <input type="text" name="last_name" value="<?php echo $last_name; ?>"><br><br>
-    Privilege: <input type="text" name="privilege" value="<?php echo $privilege; ?>"><br><br>
+    <b><?php echo $congregation; ?> Congregation </b><br><br>
+    <b>First Name:</b> <input type="text" name="first_name" value="<?php echo $first_name; ?>"><br><br>
+    <b>Last Name:</b> <input type="text" name="last_name" value="<?php echo $last_name; ?>"><br><br>
+    <b>Privilege:</b>
+    <select name="privilege" required>
+        <option value="" disabled>Select a privilege</option>
+        <?php
+        $privilegesList = ["elder", "servant", "sister", "brother"];
+
+        foreach ( $privilegesList as $priv ) {
+            $selected = ( $priv == strtolower ( $privilege ) ) ? "selected" : "";
+            echo "<option value='$priv' $selected>" . ucfirst ( $priv ) . "</option>";
+        }
+        ?>
+    </select>
+    <br><br>
+
     <input type="submit" name="update" value="Update">
+    <input type="button" value="Cancel" onclick="window.location.href='publishers';">
+
 </form>

@@ -1,12 +1,60 @@
+<!--
+██╗  ██╗██╗  ██╗██████╗  ██████╗ ███╗   ██╗ ██████╗ ███████╗    ██████╗     ██████╗ 
+██║ ██╔╝██║  ██║██╔══██╗██╔═══██╗████╗  ██║██╔═══██╗██╔════╝    ╚════██╗   ██╔═████╗
+█████╔╝ ███████║██████╔╝██║   ██║██╔██╗ ██║██║   ██║███████╗     █████╔╝   ██║██╔██║
+██╔═██╗ ██╔══██║██╔══██╗██║   ██║██║╚██╗██║██║   ██║╚════██║    ██╔═══╝    ████╔╝██║
+██║  ██╗██║  ██║██║  ██║╚██████╔╝██║ ╚████║╚██████╔╝███████║    ███████╗██╗╚██████╔╝
+╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝    ╚══════╝╚═╝ ╚═════╝ 
+June 7, 2023
+Raymond Brian D. Hernandez 
+Carla Regine R. Hernandez
+-->
+
 <?php
 
+if ( session_status() !== PHP_SESSION_ACTIVE ) {
+    session_start();
+}
+
 include ( 'db.php' );
-include ( 'debug.php' );
-include ( 'navigation.php' );
-session_start();
+include ( '../public/debug.php' );
+
+$congregation = $_SESSION['congregation'];
+
+?>
+
+<head>    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title> Upload JW Workbook - Khronos Pro 2 </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" media="all" href="../public/stylesheets/charts.min.css" />
+    <link rel="stylesheet" media="all" href="../public/stylesheets/phpvariables.php" />
+    <!-- <link rel="stylesheet" media="all" href="../public/stylesheets/dashboard.css" /> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+<body>
+    <header>
+        <?php include ( "../private/shared/loader.php" ); ?>
+        <?php echo "<script>showLoader();</script>"; ?>
+        <?php include ( "../private/shared/navigation.php" ); ?>
+        <div style="margin: 0 auto; text-align: center;">
+            <?php include ( 'tms-navigation.php' ) ?>
+        </div>
+
+<?php
 
 if ( isset ( $_POST['url'] ) ) {
-    $url = $_POST['url'];
+    
+    // Extract the year from the URL
+    $yearPattern = '/\d{4}/'; // Matches a 4-digit year
+    if (preg_match($yearPattern, $url, $matches)) {
+        $_SESSION['workbook_year'] = $matches[0]; // The year will be in $matches[0]
+    }
+    $workbook_year = $_SESSION['workbook_year'];
 
     // Initialize cURL
     $curl = curl_init();
@@ -64,7 +112,7 @@ if ( isset ( $_POST['url'] ) ) {
 
         if ( $elements->length > 0 ) {
             // All 3 songs
-            $find_songs = $xpath->query ( "//a[contains(@class, 'pub-sjj') and contains(., 'Awit')]" );
+            $find_songs = $xpath->query("//a[contains(@class, 'pub-sjj') and (contains(., 'Awit') or contains(., 'Song'))]");
 
             // Bible Verse that week
             $strongTags = $xpath->query ( "//strong" );
@@ -92,9 +140,8 @@ if ( isset ( $_POST['url'] ) ) {
                 echo "Songs already exists, skipping insert!<br>";
             } else {
                 // Record doesn't exist, proceed with the insert
-                $query  = "INSERT INTO songs ( select_week, verse, song_open, song_mid, song_close ) ";
-                $query .= "VALUES ( '$select_week', '$verse', '$song_open', '$song_mid', '$song_close' )";
-                /* echo $query,"<br>";   */              
+                $query  = "INSERT INTO songs ( year, select_week, verse, song_open, song_mid, song_close ) ";
+                $query .= "VALUES ( '$workbook_year', '$select_week', '$verse', '$song_open', '$song_mid', '$song_close' )";            
                 $result = mysqli_query ( $con, $query );
  
                 if ( ! $result ) {
@@ -147,19 +194,34 @@ if ( isset ( $_POST['url'] ) ) {
         $assistant = $session['assistant'];
 
         // Let's make sure no duplicates
-        $check_query = "SELECT * FROM assignments WHERE link='$link' AND week='$week' AND part='$part'";
-        $result = mysqli_query($con, $check_query);
+        $check_query = "SELECT * FROM assignments WHERE congregation='$congregation' AND link='$link' AND week='$week' AND part='$part'";
+        $result = mysqli_query ( $con, $check_query );
         
         // If entries doesn't exist, we add
         if ( mysqli_num_rows ( $result ) == 0 ) {
-            $query = "INSERT INTO assignments ( year, link, week, part, assignee, assistant ) VALUES ('$year', '$link', '$week', '$part', '$assignee', '$assistant')";
+            $query = "INSERT INTO assignments ( congregation, year, link, week, part, assignee, assistant ) VALUES ('$congregation', '$year', '$link', '$week', '$part', '$assignee', '$assistant')";
             echo "New parts inserted!<br>";
+            //echo $query;
             mysqli_query ( $con, $query );
         } else {
             echo "Parts already exists, skipping...<br>";
         }
     }
-    
+    echo "<script>hideLoader();</script>";    
 }
 
 ?>
+
+        <div>
+            <?php include ( "../private/shared/footer.php" ); ?>
+        </div>
+        
+    </header>   
+
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+

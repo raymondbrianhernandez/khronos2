@@ -1,11 +1,31 @@
 /* Set the dimensions of the page to the size of A4 paper */
 body {
     width: 210mm;
-    height: 297mm;
-    /* font-family: Arial, sans-serif; */
-    font-family: Cambria, Georgia, serif;
-    font-size: 10pt;
+    height: 2976mm;
+    margin: 12.7mm; /* 0.5 inches */
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 12pt;
+    box-sizing: border-box;
 }
+
+td {
+    padding: 1px;
+}
+
+.congregation {
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;    /* Hide overflowing text */
+    text-overflow: ellipsis; /* Display ellipsis (...) for overflowed text */
+}
+
+.schedule-header {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 14pt;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;    /* Hide overflowing text */
+    text-overflow: ellipsis; /* Display ellipsis (...) for overflowed text */
+}
+
 /* Remove margins and padding */
 html, body {
     margin: 0;
@@ -26,4 +46,21 @@ html, body {
 table {
     width:90%; 
     margin:0 auto;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #b82ee6; /* Initial background color */
+    color: #ffffff; /* Text color */
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer; /* Makes the cursor appear as a hand when hovering over the button */
+    transition: background-color 0.3s ease; /* Smooth transition for background-color change */
+}
+
+.button:hover {
+    background-color: #aee62b; /* Background color on hover */
+    color: black;
 }

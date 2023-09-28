@@ -1,3 +1,3 @@
 <?php
 
-header ( "Location: ../public/dashboard" );
+header ( "Location: ../public/dashboard.php" );
