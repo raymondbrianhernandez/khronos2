@@ -1,20 +1,38 @@
-/* Toggle Tr Function */
-$(document).ready(function () {  
-    debugger;  
-    $('.hideTr').slideUp(600);  
-    $('[data-toggle="toggle"]').click(function () {  
-    if ($(this).parents().next(".hideTr").is(':visible')) {  
-        $(this).parents().next('.hideTr').slideUp(600);  
-        $(".plusminus" + $(this).children().children().attr("id")).text('+');  
-        $(this).css('background-color', 'white');  
+// TOGGLES 'EDIT' BUTTON IN TERRITORIES.PHP
+jQuery (document).ready(function($) {
+    $(document).ready(function () {  
+        debugger;  
+        $('.hideTr').slideUp(600);  
+        $('[data-toggle="toggle"]').click(function () {  
+        if ($(this).parents().next(".hideTr").is(':visible')) {  
+            $(this).parents().next('.hideTr').slideUp(600);  
+            $(".plusminus" + $(this).children().children().attr("id")).text('+');  
+            // $(this).css('background-color', 'black');  
+            }  
+        else {  
+            $(this).parents().next('.hideTr').slideDown(600);  
+            $(".plusminus" + $(this).children().children().attr("id")).text('- ');  
+            // $(this).css('background-color', 'black ');    
         }  
-    else {  
-        $(this).parents().next('.hideTr').slideDown(600);  
-        $(".plusminus" + $(this).children().children().attr("id")).text('- ');  
-        $(this).css('background-color', '#c1eaff ');    
-    }  
-    });  
-}); 
+        });  
+    });
+});
+
+// TOGGLES 'ADD NEW HOUSEHOLDER' IN TERRITORIES.PHP
+var coll = document.getElementsByClassName( "collapsible" );
+var i;
+
+for ( i = 0; i < coll.length; i++ ) {
+    coll[i].addEventListener ( "click", function() {
+        this.classList.toggle ( "active" );
+        var content = this.nextElementSibling;
+        if ( content.style.display === "block" ) {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    } );
+}
 
 /* Search Names Function */
 

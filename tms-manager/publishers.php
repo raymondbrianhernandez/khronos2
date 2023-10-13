@@ -16,9 +16,9 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-include ( 'db.php' );
-include ( '../public/debug.php' );
-require ( '../private/secure.php' );
+include 'db.php';
+include '../public/debug.php';
+require '../private/secure.php';
 
 if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'Admin' ) {
     $authorized = TRUE;
@@ -46,10 +46,10 @@ $congregation = $_SESSION['congregation'];
 <body>
 
 <header>
-    <?php include ( "../private/shared/navigation.php" ); ?>
+    <?php include '../private/shared/navigation.php'; ?>
 
     <div style="margin: 0 auto; text-align: center;">
-        <?php include ( 'tms-navigation.php' ) ?>
+        <?php include 'tms-navigation.php' ?>
     </div>
 
     <div style="text-align:center">
@@ -98,7 +98,7 @@ $congregation = $_SESSION['congregation'];
 
                 $query = "SELECT id, first_name, last_name, privilege FROM publishers WHERE congregation = '$congregation' ORDER BY first_name, last_name ASC";
                 // echo $query;
-                $result = mysqli_query ( $con, $query );
+                $result = mysqli_query ( $tmscon, $query );
                 while ( $row = mysqli_fetch_array ( $result ) ) {
                     echo "<tr>";
                     echo "  <td>" . $row['first_name'] . "</td>";
@@ -111,7 +111,7 @@ $congregation = $_SESSION['congregation'];
                     echo "</td>";
                     echo "</tr>";
                 }
-                mysqli_close ( $con );
+                mysqli_close ( $tmscon );
 
                 ?>
 

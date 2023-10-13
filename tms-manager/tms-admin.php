@@ -17,7 +17,7 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
 }
 
 include ( 'db.php' );
-// include ( '../public/debug.php' );
+include ( '../public/debug.php' );
 include ( 'all_names.php' );
 require ( '../private/secure.php' );
 
@@ -42,8 +42,6 @@ if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM-Admin' )
     <link rel="stylesheet" media="all" href="../public/stylesheets/dashboard.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-
-<body>
 
 <body>
     <header>

@@ -52,7 +52,7 @@ Carla Regine R. Hernandez
                         <li class="nav-item"><a class="nav-link active" href="resetpassword"> Reset Password </a></li>
                         <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
                         <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
-                        <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
+                        <!-- <li class="nav-item"><a class="nav-link active" href="mobile"> Android/iPhone </a></li> -->
                     </ul>
                 </div>
             </div>
@@ -79,7 +79,50 @@ Carla Regine R. Hernandez
                                     </svg>
                                 </div>
 
-                                <form name="form" class="text-center" action="../private/newaccount.php" onsubmit = "return validation()" method="POST">
+                                <script>
+                                    function validation() {
+                                        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+                                        var email = document.forms["form"]["email"].value;
+                                        if ( !emailPattern.test ( email ) ) {
+                                            alert ( "Please enter a valid email address!" );
+                                            return false;
+                                        }
+
+                                        var password1 = document.forms["form"]["password1"].value;
+                                        var password2 = document.forms["form"]["password2"].value;
+                                        
+                                        if ( password1.length < 8 ) {
+                                            alert ( "Password must be at least 8 characters long!" );
+                                            return false;
+                                        }
+
+                                        if ( password1 !== password2 ) {
+                                            alert ( "Passwords don't match!" );
+                                            return false;
+                                        }
+
+                                        // Preventing default form submission until we have verified the username.
+                                        event.preventDefault();
+
+                                        let username = document.forms["form"]["user"].value;
+                                        
+                                        fetch ( "../private/check_username.php?username=" + username )
+                                        .then ( response => response.text() )
+                                        .then ( data => {
+                                            if ( data.trim() === "exists" ) {
+                                                alert ( "Username already exists. Please choose another one." );
+                                            } else {
+                                                document.forms["form"].submit();
+                                            }
+                                        })
+                                        .catch ( error => {
+                                            console.error ( 'There was an error checking the username!', error );
+                                        });
+                                    }
+                                </script>
+
+                                <form name="form" class="text-center" action="../private/newaccount.php" onsubmit ="return validation()" method="POST">
                                     <div class="mb-3">
                                         <input type="text" class="form-control" name="name" id="name" required>
                                         <b><label for="name"> Full name: </label></b>
@@ -93,6 +136,11 @@ Carla Regine R. Hernandez
                                     <div class="mb-3">
                                         <?php include( 'congregations.php' ); ?>
                                         <b><label for="congregation"> Congregation: </label></b>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <?php include( 'languages.php' ); ?><br>
+                                        <b><label for="language"> Congregation's Language: </label></b>
                                     </div>
 
                                     <div class="mb-3">
@@ -182,8 +230,7 @@ Carla Regine R. Hernandez
         newWindow.focus();
       }
     }
-</script>
-<script>
+
     function openAboutUsWindow() {
       var url = "about";
       var width = 800;

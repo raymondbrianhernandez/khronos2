@@ -7,7 +7,7 @@
         $selected_week = $_SESSION['week_select'] = $_POST['week_select'];
         
         // Saves or queries the midweek meeting date 
-        $midweek_date_sql_result  = mysqli_query ( $con, "SELECT `date`, `time` FROM `songs` WHERE `select_week` = '$selected_week'" );
+        $midweek_date_sql_result  = mysqli_query ( $tmscon, "SELECT `date`, `time` FROM `songs` WHERE `select_week` = '$selected_week'" );
         $table_row                = mysqli_fetch_assoc ( $midweek_date_sql_result );
         $_SESSION['midweek_date'] = $table_row['date'];
         $_SESSION['midweek_time'] = $table_row['time'];
@@ -15,7 +15,7 @@
         // Now we query the assignments for that week range
         $current_year = date( "Y" );
         $query  = "SELECT * FROM assignments WHERE week = '$selected_week' and year = '$current_year'";
-        $result = mysqli_query( $con, $query );
+        $result = mysqli_query( $tmscon, $query );
 
         // Displays the week range with time and date
         echo "<center><h4>For the week of " . $selected_week . "</h4></center><hr>";
@@ -24,7 +24,7 @@
         echo "<input type='time' id='midweek_time' name='midweek_time' value='".$_SESSION['midweek_time']."'></center>";
 
         // Displays the songs for that week
-        $songs = mysqli_query ( $con, "SELECT * FROM songs WHERE select_week = '".$_SESSION['week_select']."'" );
+        $songs = mysqli_query ( $tmscon, "SELECT * FROM songs WHERE select_week = '".$_SESSION['week_select']."'" );
         echo "<center><table style='width: 80%; text-align: center;'>";
         echo "<tr>";
         echo "<td style='width: 25%;'><b>Bible Verses</b></td>";
@@ -48,7 +48,7 @@
 
         // Assigning the Chairman and Aux Counselor
         $temp_query = "SELECT chairman, advisor FROM assignments WHERE week = '$selected_week' and year = '$current_year'";
-        $temp_result = mysqli_query( $con, $temp_query );
+        $temp_result = mysqli_query( $tmscon, $temp_query );
         $temp_row = mysqli_fetch_assoc ( $temp_result );
         echo "<tr>";
         echo "  <td style='width: 50%; text-align: center;'>"; 
@@ -137,7 +137,7 @@
         $midweek_time = $_SESSION['midweek_time'] = $_POST['midweek_time'];
 
         $set_midweek_date_sql = "UPDATE `songs` SET `date`='$midweek_date', `time`='$midweek_time', `year`='$year' WHERE `select_week` = '$week'";
-        mysqli_query ( $con, $set_midweek_date_sql );
+        mysqli_query ( $tmscon, $set_midweek_date_sql );
         
         for ( $i = 0; $i < count ( $parts ); $i++ ) {
             $assignee     = $publishers[$i];
@@ -145,7 +145,7 @@
             $part         = $parts[$i];
             $id           = $_SESSION["assignment"][$i]['id'];
             $update_query = "UPDATE assignments SET chairman = '$chairman', advisor = '$advisor', assignee = '$assignee', assistant = '$assistant', part = '$part' WHERE id = '$id';";
-            mysqli_query ( $con, $update_query );
+            mysqli_query ( $tmscon, $update_query );
         }
     }
         

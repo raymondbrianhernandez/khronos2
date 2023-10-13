@@ -88,8 +88,6 @@ Carla Regine R. Hernandez
 
                                 <form name="form" class="text-center" action="../private/authenticateNewPassword" method="POST">
                                     <div class="mb-3">
-                                        
-            
                                         <input class="form-control" type="password" name="password1" required>
                                         <b><label for="password1" style="text-align:left"> New Password: </label></b>
                                         <hr>

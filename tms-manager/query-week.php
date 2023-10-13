@@ -1,20 +1,20 @@
 <?php
 
 // SQL query using HEREDOC
-$congregation = mysqli_real_escape_string ( $con, $_SESSION['congregation'] );
+$tmscongregation = mysqli_real_escape_string ( $tmscon, $_SESSION['congregation'] );
 $query = <<<SQL
             SELECT week 
             FROM (
                 SELECT week, MIN(id) as min_id 
                 FROM assignments 
-                WHERE congregation = '$congregation'
+                WHERE congregation = '$tmscongregation'
                 GROUP BY week
             ) as subquery 
             ORDER BY min_id ASC
             SQL;
 
 // Execute the query
-$result = mysqli_query ( $con, $query );
+$result = mysqli_query ( $tmscon, $query );
 
 ?> 
 

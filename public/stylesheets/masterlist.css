@@ -1,0 +1,149 @@
+/* Default button styles */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  display: inline-block;
+  padding: 5px 10px; /* Adjust padding as needed */
+  font-size: 16px; /* Adjust font size as needed */
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid #333; /* Border color */
+  border-radius: 5px; /* Rounded corners */
+  background-color: #007bff; /* Button background color */
+  color: #fff; /* Button text color */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover transition */
+}
+
+/* Button hover styles */
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+  background-color: #0056b3; /* Hover background color */
+  color: #fff; /* Hover text color */
+}
+
+/* Button focus styles (for accessibility) */
+button:focus,
+input[type="button"]:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Add a subtle box shadow on focus */
+}
+
+.main-container {
+    width: 100%;
+}
+
+.master-territory {
+    margin: 1rem;
+    margin-right: 2rem;
+    margin-left: 2rem; /* Fixed typo here */
+    display: flex;
+    flex-direction: column; /* Default to column for mobile */
+    width: auto;
+    height: 200vh;
+}
+
+.map-area {
+    flex: 1;
+    background-color: white;
+    overflow-y: scroll;
+    min-height: 200px; /* Set a minimum height */
+}
+
+/* Marker styling */
+.marker {
+    width: 32px;
+    height: 32px;
+    background-image: url('../../img/bussiness-man.png');
+    background-size: cover;
+    border-radius: 50%; /* Makes the marker a circle */
+    box-shadow: 0 0 10px #fff700;
+}
+
+.boundaries {
+    flex: 0 0 auto; /* Take up only as much space as needed */
+    background-color: #b3e0f3;
+    overflow-y: scroll;
+    min-height: 100px; /* Set a minimum height */
+    padding: 20px;
+}
+
+#draw-button-container,
+#save-button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#border_name {
+    display: block;
+    margin: 10px auto;
+}
+
+.border-item {
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    margin-bottom: 10px; /* Adjust spacing as needed */
+}
+
+/* Left column (border name) */
+.border-link {
+    flex: 1; /* Take up available space in the left column */
+    text-decoration: bold;
+    color: #000000;
+}
+
+button {
+    margin: 5px 0; /* adjust as needed */
+    /* any other styling you want for the buttons */
+}
+
+@media (min-width: 768px) {
+    .master-territory {
+        flex-direction: row; /* Switch back to row for larger screens */
+    }
+    .boundaries {
+        flex: 0 0 20%;
+    }
+    .map-area {
+        flex: 1;
+    }
+}
+
+.centered {
+    text-align: center;
+    justify-content: center;
+}
+
+.sub-navigation {
+    margin-top: 3.5rem;
+}
+
+#drawPolygonButton, 
+#savePolygonButton {
+    /* background-color: blueviolet; */
+    margin: auto;
+    width: 100%;
+}
+
+.edit-button,
+.delete-button {
+    /* background-color: blueviolet; */
+    margin-bottom: 10px;
+    margin-left: 10px; /* Add space between buttons and border name */
+    width: 30%;
+}
+
+#toggleStyleButton {
+    /* background-color: blueviolet; */
+    margin-top: 10px;
+}
+
+.saved-borders {
+    margin-top: 20px;
+}

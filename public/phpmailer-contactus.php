@@ -15,8 +15,13 @@ $headers = "From: " . $sender_name . " <" . "raymondhernandez@khronos.pro" . ">\
 $headers .= "Reply-To: " . $sender_email . "\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion();
 
-$isMailSent = mail($to, $subject, $message, $headers);
-if ( $isMailSent ) {
+$isMailSent = mail ( $to, $subject, $message, $headers );
+
+// Send a copy to the sender
+$copySubject = "Copy of your message: " . $subject;
+$isCopySent = mail ( $sender_email, $copySubject, $message, $headers );
+
+if ( $isMailSent && $isCopySent ) {
 ?>
     <script type="text/javascript">
         alert("Your message has been sent.\n\nTo: <?php echo $to; ?>\nSubject: <?php echo $subject; ?>\nMessage: <?php echo $message; ?>\nSender Name: <?php echo $sender_name; ?>\nSender Email: <?php echo $sender_email; ?>");

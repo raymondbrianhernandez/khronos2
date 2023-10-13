@@ -1,5 +1,8 @@
-<?php
-    session_start();
+<?php 
+    if ( session_status() == PHP_SESSION_NONE ) {
+        session_start();
+    }
+    
     $_SESSION['email_verified']     = false;
     $_SESSION['questions_verified'] = false;
 ?>

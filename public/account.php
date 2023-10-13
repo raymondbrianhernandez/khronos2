@@ -27,7 +27,7 @@ $stmt->bind_param ( "sssssss",
 );
 
 $stmt->execute();
-$stmt->close();
+$stmt->close(); 
 
 // Update the session variables after the database update
 $_SESSION['email']          = $_POST['email'];

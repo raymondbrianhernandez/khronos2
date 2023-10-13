@@ -16,8 +16,8 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-include ( 'db.php' );
-include ( '../public/debug.php' );
+include ( '../tms-manager/db.php' );
+include ( '../tms-manager/debug.php' );
 
 $congregation = $_SESSION['congregation'];
 
@@ -38,20 +38,27 @@ $congregation = $_SESSION['congregation'];
 
 <body>
     <header>
-        <?php include ( "../private/shared/loader.php" ); ?>
-        <?php echo "<script>showLoader();</script>"; ?>
-        <?php include ( "../private/shared/navigation.php" ); ?>
+        <?php
+            // This is you loader animation, paste showLoader() on top of page,
+            // then hideLoader() at the bottom of slow pages 
+            include '../private/shared/loader.php';
+            echo "<script>showLoader();</script>"; 
+
+            include '../private/shared/navigation.php';
+        ?>
         <div style="margin: 0 auto; text-align: center;">
-            <?php include ( 'tms-navigation.php' ) ?>
+            <?php include 'tms-navigation.php' ?>
         </div>
 
 <?php
 
 if ( isset ( $_POST['url'] ) ) {
+
+    $url = filter_var ( $_POST['url'], FILTER_SANITIZE_URL );
     
     // Extract the year from the URL
     $yearPattern = '/\d{4}/'; // Matches a 4-digit year
-    if (preg_match($yearPattern, $url, $matches)) {
+    if ( preg_match ( $yearPattern, $url, $matches ) ) {
         $_SESSION['workbook_year'] = $matches[0]; // The year will be in $matches[0]
     }
     $workbook_year = $_SESSION['workbook_year'];
@@ -59,18 +66,28 @@ if ( isset ( $_POST['url'] ) ) {
     // Initialize cURL
     $curl = curl_init();
 
-    // Set the URL to scrape
-    curl_setopt ( $curl, CURLOPT_URL, $url );
-
-    // Return the response, rather than outputting it
-    curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, true );
-
-    // Execute the cURL request
-    $response = curl_exec ( $curl );
-
     // Create a new DOMDocument
     $doc = new DOMDocument();
+
+    // This function will handle the cURL requests to avoid redundancy.
+    function fetchContent ( $url, $curl ) {
+        curl_setopt ( $curl, CURLOPT_URL, $url );
+        curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, true );
+        $response = curl_exec ( $curl );
+
+        if ( $response === FALSE ) {
+            return false;  // handle error as needed
+        }
+
+        return $response;
+    }
+
+    $response = fetchContent ( $url, $curl );
     
+    if ( !$response ) { 
+        die ( "Failed to fetch the content from the URL" ); 
+    }
+
     // Load the HTML response
     @$doc->loadHTML ( $response );
 
@@ -112,7 +129,7 @@ if ( isset ( $_POST['url'] ) ) {
 
         if ( $elements->length > 0 ) {
             // All 3 songs
-            $find_songs = $xpath->query("//a[contains(@class, 'pub-sjj') and (contains(., 'Awit') or contains(., 'Song'))]");
+            $find_songs = $xpath->query ("//a[contains(@class, 'pub-sjj') and (contains(., 'Awit') or contains(., 'Song'))]" );
 
             // Bible Verse that week
             $strongTags = $xpath->query ( "//strong" );
@@ -130,7 +147,7 @@ if ( isset ( $_POST['url'] ) ) {
 
             // Check if the record already exists in the database
             $query = "SELECT * FROM songs WHERE select_week = ? AND song_open = ? AND song_mid = ? AND song_close = ?";
-            $stmt = $con->prepare ( $query );
+            $stmt = $tmscon->prepare ( $query );
             $stmt->bind_param("ssss", $select_week, $song_open, $song_mid, $song_close);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -142,7 +159,7 @@ if ( isset ( $_POST['url'] ) ) {
                 // Record doesn't exist, proceed with the insert
                 $query  = "INSERT INTO songs ( year, select_week, verse, song_open, song_mid, song_close ) ";
                 $query .= "VALUES ( '$workbook_year', '$select_week', '$verse', '$song_open', '$song_mid', '$song_close' )";            
-                $result = mysqli_query ( $con, $query );
+                $result = mysqli_query ( $tmscon, $query );
  
                 if ( ! $result ) {
                     echo "Songs and bible verse insert failed<br>";
@@ -186,37 +203,45 @@ if ( isset ( $_POST['url'] ) ) {
     $_SESSION['data'] = $session_array;
     
     foreach ( $session_array as $session ) {
-        $year = date('Y');
-        $link = $session['link'];
-        $week = $session['week'];
-        $part = $session['part'];
-        $assignee = $session['assignee'];
-        $assistant = $session['assistant'];
+        $year       = date ( 'Y' );
+        $link       = $session['link'];
+        $week       = $session['week'];
+        $part       = $session['part'];
+        $assignee   = $session['assignee'];
+        $assistant  = $session['assistant'];
 
         // Let's make sure no duplicates
         $check_query = "SELECT * FROM assignments WHERE congregation='$congregation' AND link='$link' AND week='$week' AND part='$part'";
-        $result = mysqli_query ( $con, $check_query );
+        $result = mysqli_query ( $tmscon, $check_query );
         
         // If entries doesn't exist, we add
         if ( mysqli_num_rows ( $result ) == 0 ) {
             $query = "INSERT INTO assignments ( congregation, year, link, week, part, assignee, assistant ) VALUES ('$congregation', '$year', '$link', '$week', '$part', '$assignee', '$assistant')";
             echo "New parts inserted!<br>";
             //echo $query;
-            mysqli_query ( $con, $query );
+            mysqli_query ( $tmscon, $query );
         } else {
             echo "Parts already exists, skipping...<br>";
         }
     }
-    echo "<script>hideLoader();</script>";    
+    echo "<script>hideLoader();</script>";
+    
+    // Close cURL after all operations
+    curl_close ( $curl );
+    
+    // Close database connection
+    $tmscon->close();    
+} else {
+    echo "No URL Posted";
 }
 
 ?>
 
-        <div>
-            <?php include ( "../private/shared/footer.php" ); ?>
-        </div>
-        
-    </header>   
+    <div>
+        <?php include ( "../private/shared/footer.php" ); ?>
+    </div>
+    
+</header>   
 
 </body>
 </html>
@@ -224,4 +249,3 @@ if ( isset ( $_POST['url'] ) ) {
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-

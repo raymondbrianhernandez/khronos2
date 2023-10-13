@@ -1,18 +1,21 @@
 <?php
 
-require("../private/secure.php");
-require_once("../private/db_config.php");
-include("debug.php");
-session_start();
+if ( session_status() == PHP_SESSION_NONE ) {
+    session_start();
+}
 
-function geocode($address) {
+require ( "../private/secure.php" );
+require_once ( "../private/db_config.php" );
+include ( "debug.php" );
+
+function geocode ( $address ) {
     // Map API needs '+' in place of spaces
     $key = 'AIzaSyC8li2lywcN-LK9aCsVFpuCoGX1F7IO_-8';
     $address = str_replace (" ", "+", urlencode($address));
     $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $address . '&key=' . $key; 
     
-    $unparsed_json = file_get_contents($url);
-    $result = json_decode($unparsed_json, true);
+    $unparsed_json = file_get_contents ( $url );
+    $result = json_decode ( $unparsed_json, true );
     
     $gps = array(
         'latitude'      => $result['results'][0]['geometry']['location']['lat'],
@@ -68,9 +71,9 @@ $add_query .= ")";
 $result = mysqli_query($con, $add_query);
 
 if ( $result ) {
-    header("Location: territories.php");
+    header ( "Location: territories" );
 } else {
-    echo mysqli_error($con);
+    echo mysqli_error ( $con );
     /* echo $add_query; */
 }
 

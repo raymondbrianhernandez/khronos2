@@ -24,7 +24,7 @@ foreach ($privileges as $privilege => $displayName) {
     $query = "SELECT first_name, last_name FROM publishers WHERE congregation = '$congregation' AND privilege = '$privilege' ORDER BY first_name ASC;";
     // echo $query;
     
-    $result = mysqli_query($con, $query);
+    $result = mysqli_query($tmscon, $query);
 
     while ( $row = mysqli_fetch_assoc ( $result ) ) {
         $publishers[] = $row['first_name'] . " " . $row['last_name'];

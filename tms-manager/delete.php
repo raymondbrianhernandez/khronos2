@@ -13,8 +13,8 @@ $congregation = $_SESSION['congregation'];
 $query = "DELETE FROM publishers WHERE id=$id AND congregation='$congregation'";
 echo $query;
 
-mysqli_query ( $con, $query );
-mysqli_close ( $con );
+mysqli_query ( $tmscon, $query );
+mysqli_close ( $tmscon );
 header ( "Location: publishers" );
 
 ?>

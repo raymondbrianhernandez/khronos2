@@ -1,0 +1,93 @@
+body {
+    width: auto;
+}
+
+.coming-soon {
+    color: red;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.almost-complete {
+    color: green;
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.tutorial {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
+    margin: 20px 0;
+}
+
+/* Default styles for PC/Desktop */
+.video-container {
+    max-width: 70%;  /* Adjust this to your preferred width on PC */
+}
+
+.steps-container {
+    margin-top: 0px;
+}
+
+.tutorial-step {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.tutorial-image {
+    display: block;
+    max-width: 50%;
+    height: auto;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.tutorial-step:last-child {
+    border-bottom: none;
+}
+
+.video-container {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 56.25%; /* Aspect ratio for 16:9 format */
+    height: 0;
+    max-width: 70%;
+    width: 100%; /* This ensures that the container takes the full width of its parent */
+    margin-bottom: 30px;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width of the container */
+    height: 100%; /* Full height of the container */
+}
+
+.centered {
+    text-align: center;
+    align-items: center;
+}
+
+.tutorial-step ol li {
+    margin-bottom: 50px; /* Adjust the value as needed */
+}
+
+figcaption {
+    font-style: italic;
+    font-size: small;
+}
+
+/* Media query for mobile devices */
+@media only screen and (max-width: 768px) {  /* Assuming 768px as the breakpoint for mobiles */
+    .video-container {
+        max-width: 100%;  /* Video takes full width on mobile */
+    }
+
+    .tutorial-image {
+        max-width: 100%;  /* Image takes full width on mobile */
+    }
+}

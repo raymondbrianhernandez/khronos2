@@ -49,10 +49,10 @@ $congregation = $_SESSION['congregation'];
 
 <body>
 <header>
-    <?php include ( "../private/shared/navigation.php" ); ?>
+    <?php include '../private/shared/navigation.php'; ?>
     
     <div style="margin: 0 auto; text-align: center;">
-        <?php include ( 'tms-navigation.php' ) ?>
+        <?php include 'tms-navigation.php' ?>
     </div>
 
     <div style="text-align:center">
@@ -75,7 +75,7 @@ $congregation = $_SESSION['congregation'];
             <?php 
 
                 $query = "SELECT DISTINCT week FROM assignments WHERE congregation='$congregation' ORDER BY id ASC";
-                $result = mysqli_query ( $con, $query );
+                $result = mysqli_query ( $tmscon, $query );
 
                 echo "Weeks available to edit for <b>" . $congregation . " Congregation:</b><br>";
                 echo "<select name='week_select' style='width:20%;'>";
@@ -101,10 +101,10 @@ $congregation = $_SESSION['congregation'];
     ?>
     
     <div style="text-align: center;">
-        <small><br>*Currently only works on English and Tagalog Workbooks. For example, click <a href="https://www.jw.org/tl/library/jw-workbook-para-sa-pulong/" target="_blank">JW Workbook Schedule</a> to grab all assignments.</i></small>
+        <small><br>*Currently only works on English and Tagalog Workbooks. For example, click <a href="https://www.jw.org/en/library/jw-meeting-workbook/" target="_blank">JW Workbook Schedule</a> to grab all assignments.</i></small>
     </div>
     <div>
-        <?php include ( "../private/shared/footer.php" ); ?>
+        <?php include '../private/shared/footer.php'; ?>
     </div>
     
 </header>   

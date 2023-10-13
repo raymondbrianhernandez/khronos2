@@ -2,7 +2,7 @@
 
 require("../private/secure.php");
 require_once("../private/db_config.php");
-/* include("debug.php");  */
+/* include("debug.php");  */ 
 session_start();
 
 $update_query  = "UPDATE householders SET ";
@@ -17,12 +17,12 @@ $update_query .= "telephone ='" . $_POST['telephone'] . "', ";
 $update_query .= "notes ='" . $_POST['notes'] . "' ";
 $update_query .= "WHERE Address_ID = " . $_POST['address_id'] . "";
 
-$result = mysqli_query($con, $update_query);
+$result = mysqli_query ( $con, $update_query );
 
-if($result){
-    header("Location: territories.php");
+if ( $result ) {
+    header ( "Location: territories" );
 } else {
-    echo mysqli_error($con);
+    echo mysqli_error ( $con );
 }
 
 ?>

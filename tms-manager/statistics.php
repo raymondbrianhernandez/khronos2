@@ -95,7 +95,7 @@ $congregation = $_SESSION['congregation'];
     /***** OUTPUTS ALL ELDERS AND COUNT HOW MANY DID CHAIRMAN **************************/
     /***********************************************************************************/
     echo "<hr><center><b>OUR CHRISTIAN LIFE & MINISTRY CHAIRMAN</b></center><br>";
-    $stmt = $con->prepare("SELECT publishers.first_name, publishers.last_name, COUNT(assignments.assignee) AS count
+    $stmt = $tmscon->prepare("SELECT publishers.first_name, publishers.last_name, COUNT(assignments.assignee) AS count
                         FROM publishers
                         LEFT JOIN assignments ON CONCAT(publishers.first_name, ' ', publishers.last_name) = assignments.assignee AND assignments.part = 'Pambungad na Komento (1 min.)'
                         WHERE publishers.privilege = 'elder' AND publishers.congregation = ?
@@ -149,7 +149,7 @@ $congregation = $_SESSION['congregation'];
             WHERE publishers.congregation = ? AND (publishers.privilege = 'elder' OR publishers.privilege = 'servant')
             GROUP BY publishers.first_name, publishers.last_name";
 
-    $stmt = $con->prepare($query);
+    $stmt = $tmscon->prepare($query);
     $stmt->bind_param("s", $congregation);  
     $stmt->execute();
     $result = $stmt->get_result();
@@ -204,7 +204,7 @@ $congregation = $_SESSION['congregation'];
             WHERE (publishers.privilege = 'elder' OR publishers.privilege = 'servant' OR publishers.privilege = 'brother') AND publishers.congregation = '$congregation'
             GROUP BY publishers.first_name, publishers.last_name";
 
-    $result = $con->query ( $query );
+    $result = $tmscon->query ( $query );
 
     if ( $result->num_rows > 0 ) { ?>
 
@@ -249,7 +249,7 @@ $congregation = $_SESSION['congregation'];
             WHERE publishers.privilege = 'sister' AND publishers.congregation = '$congregation' 
             GROUP BY publishers.first_name, publishers.last_name";
 
-    $result = $con->query ( $query );
+    $result = $tmscon->query ( $query );
 
     if ($result->num_rows > 0) { ?>
 

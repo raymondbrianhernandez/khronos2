@@ -15,13 +15,13 @@ if ( isset ( $_POST['update'] ) ) {
     $privilege    = $_POST['privilege'];
 
     $query = "UPDATE publishers SET congregation='$congregation', first_name='$first_name', last_name='$last_name', privilege='$privilege' WHERE id=$id";
-    mysqli_query ( $con, $query );
+    mysqli_query ( $tmscon, $query );
     header ( "Location: publishers.php" );
 }
 
 $id = $_GET['id'];
 $query = "SELECT * FROM publishers WHERE id=$id";
-$result = mysqli_query ( $con, $query );
+$result = mysqli_query ( $tmscon, $query );
 
 while ($row = mysqli_fetch_array ( $result ) ) {
     $congregation = $row['congregation'];
@@ -31,7 +31,7 @@ while ($row = mysqli_fetch_array ( $result ) ) {
 
 }
 
-mysqli_close ( $con );
+mysqli_close ( $tmscon );
 
 ?>
 

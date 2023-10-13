@@ -4,26 +4,8 @@ body {
     height: 2976mm;
     margin: 12.7mm; /* 0.5 inches */
     font-family: Calibri, Arial, sans-serif;
-    font-size: 12pt;
+    font-size: 10pt;
     box-sizing: border-box;
-}
-
-td {
-    padding: 1px;
-}
-
-.congregation {
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden;    /* Hide overflowing text */
-    text-overflow: ellipsis; /* Display ellipsis (...) for overflowed text */
-}
-
-.schedule-header {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 14pt;
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden;    /* Hide overflowing text */
-    text-overflow: ellipsis; /* Display ellipsis (...) for overflowed text */
 }
 
 /* Remove margins and padding */
@@ -31,36 +13,133 @@ html, body {
     margin: 0;
     padding: 0;
 }
-.center-text{
+
+td {
+    padding: 0.4px;
+    line-height: 1.25;
+    vertical-align: middle;
+}
+
+.congregation, .schedule-header, .col-1, .col-2, .col-3, .col-1-2 {
+    white-space: nowrap;
+}
+
+.congregation, .schedule-header {
+    white-space: normal; /* Allow wrapping */
+    width: 50%;
+}
+
+.schedule-header {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 12pt;
+}
+
+.center-text {
     text-align: center;
 }
+
 .letterhead {
     line-height: 0.1;
 }
-.report{
+
+.report {
     line-height: 1;
 }
-/* tr:nth-child(odd) {
-    background-color: #F2F2F2;
+
+/* Enable for debugging purposes only */
+/* table, th, td {
+    border: 1px solid black;
 } */
+
 table {
-    width:90%; 
-    margin:0 auto;
+    width: 7.27in;
+    margin: 0 auto; 
+    table-layout: fixed;
+    border-collapse: collapse; /* Make borders stick together */
+}
+
+.col-1, .col-3, .col-1-2, .col-2 {
+    white-space: normal; 
+    word-wrap: break-word; 
+    overflow: hidden;
+}
+
+.col-2 {
+    /* ... your existing styles ... */
+    word-wrap: break-word; /* Ensure long words/URLs can break */
+}
+
+.col-1 {
+    width: 4in;
+    text-align: left;
+    padding-right: 5px;
+}
+
+.col-2 {
+    width: 1.27in;
+    text-align: right;
+    word-wrap: break-word;
+    font-size: 8pt;
+    font-style: italic;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.col-3 {
+    width: 2in;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.col-1-2 {
+    width: 5.27in;
+    text-align: left;
+}
+
+.button-container, 
+.footer {
+    text-align: center;
 }
 
 .button {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 5px 10px;
     background-color: #b82ee6; /* Initial background color */
+    margin: 5px;
     color: #ffffff; /* Text color */
     text-decoration: none;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 5px;
-    cursor: pointer; /* Makes the cursor appear as a hand when hovering over the button */
-    transition: background-color 0.3s ease; /* Smooth transition for background-color change */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .button:hover {
-    background-color: #aee62b; /* Background color on hover */
-    color: black;
+    background-color: rgb(56, 105, 186);
+    color: white;
+}
+
+/* Adjustments for smaller devices */
+@media (max-width: 768px) {
+    body {
+        width: auto;
+        margin: 10px;
+    }
+
+    table {
+        width: 100%;
+        margin: 10px auto;
+    }
+
+    .col-1, .col-1-2 {
+        width: auto;
+    }
+
+    .col-2 {
+        width: 50px; /* adjust according to your preference while retaining the right alignment */
+    }
+
+    .col-3 {
+        width: auto;
+    }
 }

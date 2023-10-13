@@ -6,5 +6,6 @@
     <a href="tms-admin"> Assign Parts </a> |
     <a href="publishers"> Manage Publishers </a> | 
     <a href="statistics"> Statistics </a> |
-    <a href="upload"> Upload New Workbook</a>
+    <a href="upload"> Upload New Workbook</a> |
+    <a href="../tutorials/tutorial-oclm"> How to use OCLM Manager?</a>
 </p>

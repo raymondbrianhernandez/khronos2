@@ -19,10 +19,22 @@ Carla Regine R. Hernandez
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>Login - Khronos Pro 2</title>
+    <title>Khronos Pro 2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" media="all" href="./stylesheets/styles.min.css"/>
     <link rel="stylesheet" media="all" href="./stylesheets/animatedbackground.css"/>
+    <style>
+           .coming-soon {
+                color: red;
+                font-size: 10pt;
+                font-weight: bold;
+            }
+            .almost-complete {
+                color: green;
+                font-size: 10pt;
+                font-weight: bold;
+            } 
+        </style>
 </head>
 
 <body>
@@ -39,21 +51,48 @@ Carla Regine R. Hernandez
         <div class="container">
             <img src="../img/khronos.gif" alt="logo" height="100px">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <span> Khroʹnos Pro 2 </span>
+                <span> Khro'nos Pro 2 </span>
             </a>
                 <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5">
                     <span class="visually-hidden"> Toggle navigation </span>
                     <span class="navbar-toggler-icon"></span>
                 </button>
-            <div class="collapse navbar-collapse" id="navcol-5">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="resetpassword"> Reset Password </a></li>
-                    <li class="nav-item"><a class="nav-link active" href="registration"> Register </a></li>
-                    <!-- <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openDonationWindow()"> Donate </a></li> -->
-                    <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
-                    <!-- <li class="nav-item"><a class="nav-link active" href="logout.php"> Sign out </a></li> -->
-                </ul>
-            </div>
+                <div class="collapse navbar-collapse" id="navcol-5">
+                    <ul class="navbar-nav ms-auto font-weight-bold">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link active dropdown-toggle" href="#" id="quickLinksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Quick Links
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="quickLinksDropdown">
+                                <!-- Add your quick links here -->
+                                <li><a class="dropdown-item" href="../public/onesearch-public" target="_blank"> One Search </a></li>
+                                <li><a class="dropdown-item" href="https://arbhie.com/projects/bible-game/" target="_blank"> Logikos Trivia Game </a></li>
+                                <li><a class="dropdown-item" href="https://emoji.khronos.pro" target="_blank"> Bible Emoji Flashcards </a></li>
+                                <!-- ... -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link active dropdown-toggle" href="#" id="quickLinksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Tutorials
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="quickLinksDropdown">
+                                <!-- Add your quick links here -->
+                                <li><a class="dropdown-item active" href="../tutorials/tutorial-oclm"> Our Christian Life and Ministry Manager </a></li>
+                                <li><a class="dropdown-item" href="../tutorials/tutorial-pt"> Public Talk Manager </a></li>
+                                <li><a class="dropdown-item" href="../tutorials/tutorial-terr"> Master Territory Manager </a></li>
+                                <li><a class="dropdown-item" href="../tutorials/tutorial-hth"> House-to-House Records </a></li>
+                                <li><a class="dropdown-item" href="../tutorials/tutorial-msr"> Service Reports </a></li>
+                                <li><a class="dropdown-item" href="../tutorials/tutorial-search"> One Search </a></li>
+                                <li><a class="dropdown-item" href="../tutorials/tutorial-note"> Notebook </a></li>
+                                <!-- ... -->
+                            </ul>
+                        
+                        <li class="nav-item"><a class="nav-link active" href="registration"> Register </a></li>
+                        <li class="nav-item"><a class="nav-link active" href="resetpassword"> Reset Password </a></li>
+                        <li class="nav-item"><a class="nav-link active" href="javascript:void(0);" onclick="openAboutUsWindow()"> About </a></li>
+                    </ul>
+                </div>
+
         </div>
     </nav>
     <!-- End: Navbar Right Links (Dark) -->
@@ -83,10 +122,6 @@ Carla Regine R. Hernandez
                                         <input type="text" class="form-control" type="user" name="user" >
                                         <b><label for="user" style="text-align:left"> Username: </label></b>
                                     </div>
-                                    <!-- <div class="mb-3">
-                                        < ?php include ("congregations.php"); ?>
-                                        <b><label for="goal"> Congregation: </label></b>
-                                    </div> -->
                                     <div class="mb-3">
                                         <input type="password" class="form-control" type="pass" name="pass" >
                                         <b><label for="pss"> Password: </label></b>
@@ -123,7 +158,7 @@ Carla Regine R. Hernandez
         <div class="container  py-4 py-lg-5">
             <p class="mb-0" style="color:white;">
                 &copy; <?php echo '2022 - ' . date('Y'); ?> Khronos Pro 2 by 
-                <a href="https://gudeprojects.be" target="_blank" style="color:white;"> Raymond & Carla Hernandez </a>
+                <a href="https://gudeprojects.be" target="_blank" style="color:white;"> GudeProjects </a>
             </p>
         </div>
     </footer>
@@ -131,35 +166,35 @@ Carla Regine R. Hernandez
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    function openDonationWindow() {
-      var url = "donate";
-      var width = 600;
-      var height = 400;
-      
-      // Open the new window with specified width and height
-      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
-      
-      // Focus the new window (optional)
-      if ( newWindow ) {
-        newWindow.focus();
-      }
+function openDonationWindow() {
+    var url = "donate";
+    var width = 600;
+    var height = 400;
+    
+    // Open the new window with specified width and height
+    var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
+    
+    // Focus the new window (optional)
+    if ( newWindow ) {
+    newWindow.focus();
     }
-</script>
-<script>
-    function openAboutUsWindow() {
-      var url = "about";
-      var width = 600;
-      var height = 400;
-      
-      // Open the new window with specified width and height
-      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
-      
-      // Focus the new window (optional)
-      if ( newWindow ) {
-        newWindow.focus();
-      }
+} 
+
+function openAboutUsWindow() {
+    var url = "about";
+    var width = 600;
+    var height = 400;
+    
+    // Open the new window with specified width and height
+    var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
+    
+    // Focus the new window (optional)
+    if ( newWindow ) {
+    newWindow.focus();
     }
+}
 </script>
 
 </body>

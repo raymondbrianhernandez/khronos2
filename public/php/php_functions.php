@@ -4,7 +4,7 @@
 function geocode ( $address ) {
 
     // Map API needs '+' in place of spaces
-    $key = 'USE YOUR OWN';
+    $key = 'AIzaSyC8li2lywcN-LK9aCsVFpuCoGX1F7IO_-8';
     $address = str_replace (" ", "+", urlencode($address));
     $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . $address . '&key=' . $key; 
     /* $url = 'https://geocode.maps.co/search?q=' . $address; */
@@ -23,10 +23,12 @@ function geocode ( $address ) {
 }
 
 function redirect ( $url, $message ) {
+    $message = str_replace("'", "\'", $message);
     echo "<script type='text/javascript'>
-            alert( '".$message."' );
+            alert('".$message."');
             window.location.href='".$url."';
-            </script>";
+          </script>";
+    exit;
 }
 
-?>
+?> 
