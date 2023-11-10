@@ -1,0 +1,197 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<header>
+    <!-- Start: Navbar Right Links (Dark) -->
+    <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
+        <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center" href="dashboard.php">
+                <img src="https://khronos.pro/img/khronos.gif" alt="logo" height="100px">
+                <span> Khro'nos Pro 2 </span>
+            </a>
+
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-5">
+                <span class="visually-hidden"> Toggle navigation </span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navcol-5">
+                <ul class="navbar-nav ms-auto" style="margin-bottom: 10px;">
+                    <li class="nav-item"><a class="nav-link active" href="https://khronos.pro/public/dashboard"> Dashboard </a></li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active dropdown-toggle" href="#" id="quickLinksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Field Ministry
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="quickLinksDropdown">
+                            <li><a class="dropdown-item" href="https://khronos.pro/public/masterlist"> Master Territory </a></li>
+                            <li><a class="dropdown-item" href="https://khronos.pro/public/territories"> House to House Records </a></li>
+                            <li><a class="dropdown-item" href="https://khronos.pro/public/onesearch"> One Search </a></li>
+                            <li><a class="dropdown-item" href="https://khronos.pro/public/hours"> Service Reports </a></li>
+                            <!-- <li><a class="dropdown-item" href="https://khronos.pro/public/alba">CSV Converter for Alba</a></li> -->
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active dropdown-toggle" href="#" id="navbarResourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            KH Meetings
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarResourcesDropdown">
+                            <!-- Add KH Meetings links here -->
+                            <li><a class="dropdown-item" href="https://khronos.pro/tms-manager/tms-admin"> Our Christian Life and Ministry Manager </a></li>
+                            <li><a class="dropdown-item" href="https://khronos.pro/publictalk/pt-manager"> Public Talk Manager <span class="coming-soon">(Coming Soon)</span></a></li>
+                            <li><a class="dropdown-item" href="https://khronos.pro/public/assignments">My Assignments <span class="coming-soon">(Coming Soon)</span></a></li>
+                            <li><a class="dropdown-item" href="">Study Tools <span class="coming-soon">(Coming Soon)</span></a></li>
+                            <li><a class="dropdown-item" href="https://khronos.pro/public/journal">Notebook</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active dropdown-toggle" href="#" id="navbarResourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Fun Stuffs
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarResourcesDropdown">
+                            <!-- Add Fun Stuffs links here -->
+                            <li><a target="_blank" class="dropdown-item" href="https://arbhie.com/projects/bible-game/"> Logikos Trivia Game </a></li>
+                            <li><a target="_blank" class="dropdown-item" href="https://khronos.pro/public/emoji-game"> Bible Emoji Flashcards </a></li>
+                            <li><a target="_blank" class="dropdown-item" href=""> Guitar/Piano Chords <span class="coming-soon">(Coming Soon)</span> </a></li>
+                            <li><a target="_blank" class="dropdown-item" href=""> Game Ideas <span class="coming-soon">(Coming Soon)</span> </a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link active dropdown-toggle" href="#" id="navbarResourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Support
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarResourcesDropdown">
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="openAboutUsWindow()"> About Khronos Pro 2 </a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="openContactUsWindow()"> Contact Us </a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="openDonateWindow()"> Donate/Volunteer </a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="openCreditsWindow()"> Credits </a></li>
+
+                            <!-- Move Tutorials section here -->
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <b> Tutorials </b>
+                                <span style="color: green; font-size: 10px;"><i class="fas fa-check-circle"></i> online </span>
+                                |
+                                <span style="color: red; font-size: 10px;"><i class="fas fa-times-circle"></i> offline</span>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-oclm">
+                                    <i class="fas fa-check-circle" style="color: green;"></i>
+                                    Our Christian Life and Ministry Manager
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-pt">
+                                    <i class="fas fa-times-circle" style="color: red;"></i>
+                                    Public Talk Manager
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-terr">
+                                    <i class="fas fa-times-circle" style="color: red;"></i>
+                                    Master Territory Manager
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-hth">
+                                    <i class="fas fa-times-circle" style="color: red;"></i>
+                                    House-to-House Records
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-msr">
+                                    <i class="fas fa-times-circle" style="color: red;"></i>
+                                    Service Reports
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-search">
+                                    <i class="fas fa-times-circle" style="color: red;"></i>
+                                    One Search
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="https://khronos.pro/tutorials/tutorial-note">
+                                    <i class="fas fa-times-circle" style="color: red;"></i>
+                                    Notebook
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link active" href="https://khronos.pro/public/logout"> Sign out </a></li>
+                </ul>
+            </div>
+
+            <div style="position: absolute; left: auto; bottom: 0; color: white;">
+                @Model.JwtClaims["Owner"] [@Model.JwtClaims["Admin"]]
+            </div>
+        </div>
+    </nav>
+    <!-- End: Navbar Right Links (Dark) -->
+</header>
+
+
+<script>
+    function openDonateWindow() {
+      var url = "https://khronos.pro/public/donate";
+      var width = 600;
+      var height = 400;
+      
+      // Open the new window with specified width and height
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
+      
+      // Focus the new window (optional)
+      if ( newWindow ) {
+        newWindow.focus(); 
+      }
+    }
+</script>
+<script>
+    function openAboutUsWindow() {
+      var url = "https://khronos.pro/public/about";
+      var width = 600;
+      var height = 400;
+      
+      // Open the new window with specified width and height
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
+      
+      // Focus the new window (optional)
+      if ( newWindow ) {
+        newWindow.focus();
+      }
+    }
+</script>
+<script>
+    function openContactUsWindow() {
+      var url = "https://khronos.pro/public/contact-us";
+      var width = 600;
+      var height = 400;
+      
+      // Open the new window with specified width and height
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
+      
+      // Focus the new window (optional)
+      if ( newWindow ) {
+        newWindow.focus(); 
+      }
+    }
+</script>
+<script>
+    function openCreditsWindow() {
+      var url = "https://khronos.pro/public/credits";
+      var width = 600;
+      var height = 400;
+      
+      // Open the new window with specified width and height
+      var newWindow = window.open ( url, "_blank", "width=" + width + ",height=" + height );
+      
+      // Focus the new window (optional)
+      if ( newWindow ) {
+        newWindow.focus();
+      }
+    }
+</script>

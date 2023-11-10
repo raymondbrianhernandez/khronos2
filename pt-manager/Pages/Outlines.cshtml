@@ -1,0 +1,91 @@
+﻿@* Outlines.cshtml *@
+@page
+@model OutlinesModel
+@{
+    ViewData["Title"] = "Public Talk Outlines - Khronos Pro 2";
+}
+
+<h4>Public Talk Outlines</h4>
+
+<form method="get">
+    <center>
+        <div class="form-group">
+            <b>Display Language:&nbsp;</b>
+            <select name="language" id="languageDropdown" onchange="this.form.submit()">
+                <option value="all" selected="@(Model.Language == "all" ? "selected" : null)">All</option>
+                <option value="english" selected="@(Model.Language == "english" ? "selected" : null)">English</option>
+                <option value="tagalog" selected="@(Model.Language == "tagalog" ? "selected" : null)">Tagalog</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <b>Search Keywords or Outline No.:&nbsp;</b>
+            <input class="search_bar" type="text" name="searchTitle" value="@Model.SearchTitle" placeholder="Search by title or outline number..." />
+            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-primary" type="button" onclick="window.location.href='/Outlines';">Clear Results</button>
+        </div>
+    </center>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="outline-column">Outline</th>
+            <th>Title</th>
+            <th>Last Speaker</th>
+            <th>Congregation</th>
+            <th>Date Last Delivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var outline in Model.Outlines)
+        {
+            <tr>
+                <td class="outline-column">@outline.Outline_No</td>
+                <td>@outline.Title</td>
+                <td>
+                    @{
+                        var congregationName = Model.JwtClaims["Congregation"].ToString();
+                        var outlineNo = outline.Outline_No;
+
+                        var recentHistory = Model.History != null ? Model.History
+                            .Where(h => h.Outline_No == outline.Outline_No && h.Congregation_Owner == congregationName)
+                            .OrderByDescending(h => h.Date)
+                            .FirstOrDefault() : null;
+
+                        if (recentHistory != null)
+                        {
+                            @recentHistory.Name
+                        }
+                    }
+                </td>
+                <td>
+                    @if (recentHistory != null && recentHistory.Congregation != null)
+                    {
+                        @recentHistory.Congregation
+                    }
+                </td>
+                <td>
+                    @if (recentHistory != null)
+                    {
+                        var timeSinceRecentHistory = DateTime.Now - recentHistory.Date;
+                        int totalDays = timeSinceRecentHistory.Days;
+                        int monthsAgo = totalDays / 30; // Approximate, assuming each month has 30 days
+                        int daysAgo = totalDays % 30;
+
+                        if (totalDays < 0)
+                        {
+                            <span></span>   
+                        }
+                        else {
+                            <span>@recentHistory.Date.ToString("dd/MM/yyyy")</span>
+                            <span> - @monthsAgo months & @daysAgo days ago</span>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+
+
+</table>

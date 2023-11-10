@@ -1,0 +1,221 @@
+﻿@* Index.cshtml *@
+@page
+@model PublicTalk_Manager.Pages.IndexModel
+@{
+    ViewData["Title"] = "Assign Speakers - Khronos Pro 2";
+}
+
+@if (Model.Admin?.ToLower() != "super admin" && Model.Admin?.ToLower() != "pt admin")
+{
+    @await Html.PartialAsync("_PublicView")
+}
+else
+{
+    @* for Debugging only *@
+    @* <h2>JWT Claims</h2> 
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Claim Type</th>
+                <th>Claim Value</th>
+                <th>Claim Variable</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in Model.JwtClaims)
+            {
+                <tr>
+                    <td>@claim.Key</td>
+                    <td>@claim.Value</td>
+                    <td>Model.JwtClaims["@(claim.Key)"]</td>
+                </tr>
+            }
+        </tbody>
+    </table> *@
+    @* for Debugging only *@
+
+    <h4>Assign Incoming Speakers</h4>
+    <form method="post" asp-page-handler="AssignSpeakers">
+        <center>
+            <div class="form-group">
+                <label for="yearDropdown">Select Year:</label>
+                <select id="yearDropdown" name="SelectedYear">
+                    @for (int i = 2023; i <= 2034; i++)
+                    {
+                        if (i == Model.SelectedYear)
+                        {
+                            <option value="@i" selected>@i</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Assign Speakers</button>
+            </div>
+        </center>
+    </form>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info">
+            <center>@TempData["Message"]</center>
+        </div>
+    }
+
+    @if ((Model.Schedules != null)) 
+    {
+        <div class="table-responsive">
+            <form method="post" asp-page-handler="UpdateAssignments">
+                <div class="mb-3">
+                    @* <button type="submit" class="btn btn-warning" asp-page-handler="RandomizeChairman">Randomize Chairman</button> *@
+                    <button type="submit" class="btn btn-primary">Update All Assignments</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;"></th>
+                            <th style="width: 40%;"></th>
+                            <th style="width: 10%;"></th>
+                            <th style="width: 40%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rowCount = 0;
+                            int weekCounter = 1;
+                        }
+                        @foreach (var date in Model.GetAllSundays(Model.SelectedYear))
+                        {
+                            var scheduleForThisDate = Model.Schedules.FirstOrDefault(s => s.Date == date);
+                            string bgColorClass = (rowCount / 4) % 2 == 0 ? "baby-blue-bg1" : "baby-blue-bg2";
+                            
+                            <tr class="@bgColorClass">
+                                <td style="font-size:20px;"><b>Week @weekCounter</b></td>
+                                <td><b>@date.ToString("MMMM dd, yyyy")</b></td>
+                                <td><b>Song no.:</b></td>
+                                <td><input type="number" name="Song_@date.ToShortDateString()" min="0" max="151" value="@scheduleForThisDate?.Song" /></td>
+                            </tr>
+                            weekCounter++;
+
+                            <tr class="@bgColorClass">
+                                <td><b>Speaker:</b></td>
+                                <td>
+                                    <input type="text" name="Speaker_From_@date.ToShortDateString()" value="@scheduleForThisDate?.Speaker" />
+                                 </td>
+                                <td><b>Congregation:</b></td>
+                                <td><input type="text" name="Congregation_From_@date.ToShortDateString()" value="@scheduleForThisDate?.Congregation_From" placeholder="Leave blank if local arrangement" /></td>
+                            </tr>
+
+                            <tr class="@bgColorClass">
+                                <td><b>Local:</b></td>
+                                <td>
+                                    <select name="Speaker_@date.ToShortDateString()">
+                                        <option value="">...or choose from local brothers</option>
+                                        @foreach (var speaker in Model.ListOfSpeakers) // Loop through speakers
+                                        {
+                                            if (scheduleForThisDate?.Speaker == speaker.Name)
+                                            {
+                                                <option value="@speaker.Name" selected>@speaker.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@speaker.Name">@speaker.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Outline Title:</b></td>
+                                <td>
+                                    <select name="Title_@date.ToShortDateString()">
+                                        <option value="">Select an outline...</option>
+                                        @if (Model.Outlines != null)
+                                        {
+                                            @foreach (var outline in Model.Outlines)
+                                            {
+                                                if (scheduleForThisDate?.Title == outline.Title)
+                                                {
+                                                    <option value="@outline.Title" selected>(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@outline.Title">(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr class="@bgColorClass">
+                                <td><b>Privilege:</b></td>
+                                <td>
+                                    <select name="Privilege_@date.ToShortDateString()">
+                                        <option value="">Select a privilege...</option>
+
+                                        @if (scheduleForThisDate?.Privilege == "elder")
+                                        {
+                                            <option value="elder" selected>Elder</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="elder">Elder</option>
+                                        }
+
+                                        @if (scheduleForThisDate?.Privilege == "servant")
+                                        {
+                                            <option value="servant" selected>Servant</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="servant">Servant</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Notes/Telephone:</b></td>
+                                <td><input type="text" name="Note_@date.ToShortDateString()" value="@scheduleForThisDate?.Note" /></td>
+                            </tr>
+
+                            <tr class="@bgColorClass">
+                                <td><b>Chairman:</b></td>
+                                <td>
+                                    <select name="Chairman_@date.ToShortDateString()">
+                                        <option value=""></option>
+                                        @foreach (var speaker in Model.ListOfSpeakers) // Loop through speakers
+                                        {
+                                            if (scheduleForThisDate?.Chairman == speaker.Name)
+                                            {
+                                                <option value="@speaker.Name" selected>@speaker.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@speaker.Name">@speaker.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td colspan="4">
+                                    <center>
+                                    <button type="submit" class="btn btn-primary">Update Assignments for @date.ToString("MMMM dd, yyyy")</button>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr><td></td></tr> // White spacers
+                            rowCount += 4;
+                        }
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Update Assignments</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <center>Please choose a year to edit.</center>
+            @*<center>Last edit: @Model.SelectedYear</center>*@
+        </div>
+    }
+}

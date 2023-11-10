@@ -1,0 +1,100 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.contents {
+    margin-top: 1rem;
+}
+
+#languageDropdown {
+    width: 25%;
+}
+
+.text-center {
+    margin-top: 5rem;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.search_button {
+    background-color: green !important;
+}
+
+.clear_button {
+    background-color: red !important;
+}
+
+.search_bar {
+    width: 25% !important;
+}
+
+.form-group {
+    margin: 1rem;
+    /*text-align: center;*/
+}
+
+.outline-column {
+    width: 100px; /* or any appropriate width */
+    text-align: center; /* optional: to center the numbers */
+}
+
+#yearDropdown {
+    width: 10%;
+}
+
+@media (max-width: 768px) {
+    /* Increase font size for better readability */
+    table th, table td {
+        font-size: 1.2em;
+    }
+
+    /* Hide Privilege column */
+    th:nth-child(4), td:nth-child(4) {
+        display: none;
+    }
+
+    /* Hide Outline column */
+    th:nth-child(6), td:nth-child(6) {
+        display: none;
+    }
+
+    /* Hide Notes column */
+    th:nth-child(9), td:nth-child(9) {
+        display: none;
+    }
+}
+
+.baby-blue-bg1 {
+    background-color: #AEDFF7; /
+}
+
+.baby-blue-bg2 {
+    background-color: #89cff0;
+}
+
+.talk-counter-input {
+    width: 40px !important; 
+}
+
+

@@ -1,0 +1,51 @@
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.csproj.AssemblyReference.cache
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.AssemblyInfoInputs.cache
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.AssemblyInfo.cs
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.csproj.CoreCompileInputs.cache
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.RazorAssemblyInfo.cache
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.RazorAssemblyInfo.cs
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\appsettings.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\PublicTalk Manager.staticwebassets.runtime.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\PublicTalk Manager.exe
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\PublicTalk Manager.deps.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\PublicTalk Manager.runtimeconfig.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\PublicTalk Manager.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\PublicTalk Manager.pdb
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets\msbuild.PublicTalk Manager.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets\msbuild.build.PublicTalk Manager.props
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.PublicTalk Manager.props
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.PublicTalk Manager.props
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\scopedcss\Pages\Shared\_Navigation.cshtml.rz.scp.css
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\scopedcss\bundle\PublicTalk Manager.styles.css
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\scopedcss\projectbundle\PublicTalk Manager.bundle.scp.css
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.csproj.CopyComplete
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\refint\PublicTalk Manager.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.pdb
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\PublicTalk Manager.genruntimeconfig.cache
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\obj\Debug\net7.0\ref\PublicTalk Manager.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\MySqlConnector.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Humanizer.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\System.CodeDom.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Owner\Dropbox\htdocs\projects\PublicTalk Manager\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll

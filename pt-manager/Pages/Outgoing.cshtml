@@ -1,0 +1,331 @@
+﻿@* Outgoing.cshtml *@
+@page
+@model PublicTalk_Manager.Pages.OutgoingModel
+@{
+    ViewData["Title"] = "Outgoing Speakers - Khronos Pro 2";
+}
+
+@if (Model.Admin?.ToLower() != "super admin" && Model.Admin?.ToLower() != "pt admin")
+{
+    @await Html.PartialAsync("_PublicView")
+}
+else
+{
+    @* for Debugging only *@
+    @*<h2>JWT Claims</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Claim Type</th>
+                <th>Claim Value</th>
+                <th>Claim Variable</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in Model.JwtClaims)
+            {
+                <tr>
+                    <td>@claim.Key</td>
+                    <td>@claim.Value</td>
+                    <td>Model.JwtClaims["@(claim.Key)"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @* for Debugging only *@
+
+    <h4>Assign Outgoing Speakers</h4>
+    <form method="post" asp-page-handler="OutgoingSpeakers">
+        <center>
+            <div class="form-group">
+                <label for="yearDropdown">Select Year:</label>
+                <select id="yearDropdown" name="SelectedYear">
+                    @for (int i = 2024; i <= 2034; i++)
+                    {
+                        if (i == Model.SelectedYear)
+                        {
+                            <option value="@i" selected>@i</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Assign Speakers</button>
+            </div>
+        </center>
+    </form>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info">
+            <center>@TempData["Message"]</center>
+        </div>
+    }
+
+    @if ((Model.Outgoing != null))
+    {
+        <div class="table-responsive">
+            <form method="post" asp-page-handler="UpdateOutgoingAssignments">
+                <div class="mb-3">
+                    @* <button type="submit" class="btn btn-warning" asp-page-handler="RandomizeChairman">Randomize Chairman</button> *@
+                    <button type="submit" class="btn btn-primary">Update All Assignments</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;"></th>
+                            <th style="width: 40%;"></th>
+                            <th style="width: 10%;"></th>
+                            <th style="width: 40%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rowCount = 0;
+                            int weekCounter = 1;
+                        }
+                        @foreach (var date in Model.GetAllSundays(Model.SelectedYear))
+                        {
+                            var scheduleForThisDate = Model.Outgoing.FirstOrDefault(s => s.Date == date);
+                            string bgColorClass = (rowCount / 4) % 2 == 0 ? "baby-blue-bg1" : "baby-blue-bg2";
+
+                            // You might want to loop here or repeat the pattern below for Speaker2, Speaker3, and Speaker4
+                            <tr style="background-color:aqua"><td colspan="4"></td></tr>
+                            <tr class="@bgColorClass">
+                                <td style="font-size:20px;"><b>Week @weekCounter</b></td>
+                                <td><b>@date.ToString("MMMM dd, yyyy")</b></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            weekCounter++;
+
+                            // Speaker1
+                            <tr class="@bgColorClass">
+                                <td><b>1. Speaker:</b></td>
+                                <td>
+                                    <select name="Speaker1_@date.ToShortDateString()">
+                                        <option value=""></option>
+                                        @foreach (var speaker in Model.ListOfSpeakers)
+                                        {
+                                            if (scheduleForThisDate?.Speaker1 == speaker.Name)
+                                            {
+                                                <option value="@speaker.Name" selected>@speaker.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@speaker.Name">@speaker.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Congregation:</b></td>
+                                <td><input type="text" name="Congregation_To1_@date.ToShortDateString()" value="@scheduleForThisDate?.Congregation_To1" /></td>
+                            </tr>
+
+                            // Title1
+                            <tr class="@bgColorClass">
+                                <td><b>1. Title:</b></td>
+                                <td>
+                                    <select name="Title1_@date.ToShortDateString()">
+                                        <option value="">Select an outline...</option>
+                                        @if (Model.Outlines != null)
+                                        {
+                                            @foreach (var outline in Model.Outlines)
+                                            {
+                                                if (scheduleForThisDate?.Title1 == outline.Title)
+                                                {
+                                                    <option value="@outline.Title" selected>(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@outline.Title">(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Notes/Contact:</b></td>
+                                <td><input type="text" name="Note1_@date.ToShortDateString()" value="@scheduleForThisDate?.Note1" /></td>
+                            </tr>
+                            <tr style="background-color:aqua"><td colspan="4"></td></tr>
+
+                            // Speaker2
+                            <tr class="@bgColorClass">
+                                <td><b>2. Speaker:</b></td>
+                                <td>
+                                    <select name="Speaker2_@date.ToShortDateString()">
+                                        <option value=""></option>
+                                        @foreach (var speaker in Model.ListOfSpeakers)
+                                        {
+                                            if (scheduleForThisDate?.Speaker2 == speaker.Name)
+                                            {
+                                                <option value="@speaker.Name" selected>@speaker.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@speaker.Name">@speaker.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Congregation:</b></td>
+                                <td><input type="text" name="Congregation_To2_@date.ToShortDateString()" value="@scheduleForThisDate?.Congregation_To2" /></td>
+                            </tr>
+        
+                            // Title2
+                            <tr class="@bgColorClass">
+                                <td><b>2. Title:</b></td>
+                                <td>
+                                    <select name="Title2_@date.ToShortDateString()">
+                                        <option value="">Select an outline...</option>
+                                        @if (Model.Outlines != null)
+                                        {
+                                            @foreach (var outline in Model.Outlines)
+                                            {
+                                                if (scheduleForThisDate?.Title2 == outline.Title)
+                                                {
+                                                    <option value="@outline.Title" selected>(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@outline.Title">(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Notes/Contact:</b></td>
+                                <td><input type="text" name="Note2_@date.ToShortDateString()" value="@scheduleForThisDate?.Note2" /></td>
+                            </tr>
+                            <tr style="background-color:aqua"><td colspan="4"></td></tr>
+
+                            // Speaker3
+                            <tr class="@bgColorClass">
+                                <td><b>3. Speaker:</b></td>
+                                <td>
+                                    <select name="Speaker3_@date.ToShortDateString()">
+                                        <option value=""></option>
+                                        @foreach (var speaker in Model.ListOfSpeakers)
+                                        {
+                                            if (scheduleForThisDate?.Speaker3 == speaker.Name)
+                                            {
+                                                <option value="@speaker.Name" selected>@speaker.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@speaker.Name">@speaker.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Congregation:</b></td>
+                                <td><input type="text" name="Congregation_To3_@date.ToShortDateString()" value="@scheduleForThisDate?.Congregation_To3" /></td>
+                            </tr>
+
+                            // Title3
+                            <tr class="@bgColorClass">
+                                <td><b>3. Title:</b></td>
+                                <td>
+                                    <select name="Title3_@date.ToShortDateString()">
+                                        <option value="">Select an outline...</option>
+                                        @if (Model.Outlines != null)
+                                        {
+                                            @foreach (var outline in Model.Outlines)
+                                            {
+                                                if (scheduleForThisDate?.Title3 == outline.Title)
+                                                {
+                                                    <option value="@outline.Title" selected>(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@outline.Title">(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Notes/Contact:</b></td>
+                                <td><input type="text" name="Note3_@date.ToShortDateString()" value="@scheduleForThisDate?.Note3" /></td>
+                            </tr>
+                            <tr style="background-color:aqua"><td colspan="4"></td></tr>
+
+                            // Speaker4
+                            <tr class="@bgColorClass">
+                                <td><b>4. Speaker:</b></td>
+                                <td>
+                                    <select name="Speaker4_@date.ToShortDateString()">
+                                        <option value=""></option>
+                                        @foreach (var speaker in Model.ListOfSpeakers)
+                                        {
+                                            if (scheduleForThisDate?.Speaker4 == speaker.Name)
+                                            {
+                                                <option value="@speaker.Name" selected>@speaker.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@speaker.Name">@speaker.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Congregation:</b></td>
+                                <td><input type="text" name="Congregation_To4_@date.ToShortDateString()" value="@scheduleForThisDate?.Congregation_To4" /></td>
+                            </tr>
+
+                            // Title4
+                            <tr class="@bgColorClass">
+                                <td><b>4. Title:</b></td>
+                                <td>
+                                    <select name="Title4_@date.ToShortDateString()">
+                                        <option value="">Select an outline...</option>
+                                        @if (Model.Outlines != null)
+                                        {
+                                            @foreach (var outline in Model.Outlines)
+                                            {
+                                                if (scheduleForThisDate?.Title4 == outline.Title)
+                                                {
+                                                    <option value="@outline.Title" selected>(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@outline.Title">(@outline.Outline_No) - @outline.Title</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                </td>
+                                <td><b>Notes/Contact:</b></td>
+                                <td><input type="text" name="Note4_@date.ToShortDateString()" value="@scheduleForThisDate?.Note4" /></td>
+                            </tr>
+
+                            <tr class="@bgColorClass">
+                                <td colspan="4">
+                                    <center>
+                                        <button type="submit" class="btn btn-primary">Update Assignments for @date.ToString("MMMM dd, yyyy")</button>
+                                    </center>
+                                </td>
+                            </tr>
+
+                            // White spacers
+                            <tr><td></td></tr>
+
+                            rowCount += 4;
+                        }
+                    </tbody>
+
+                </table>
+                <button type="submit" class="btn btn-primary">Update Assignments</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <center>Please choose a year to edit.</center>
+            @*<center>Last edit: @Model.SelectedYear</center>*@
+        </div>
+    }
+}

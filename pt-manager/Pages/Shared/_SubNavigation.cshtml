@@ -1,0 +1,36 @@
+﻿@* _SubNavigation.cshtml *@
+<style>
+    /* Center the SVG image */
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* height: 100vh; */
+    }
+</style>
+
+<div class="text-center">
+    <h4><b>Public Talk Manager</b></h4>
+    <p>
+        This tool is only for the COBE or Public Talk Coordinator, and/or their assistants to organize public talks.
+    </p>
+    <p>
+        For publishers, this page will only display your assignments as speaker/chairman or the Sunday program.
+    </p>
+    <a asp-page="/Index"> Incoming Speakers </a> |
+    <a asp-page="/Outgoing"> Outgoing Speakers </a> |
+    <a asp-page="/Outlines"> Talk Outlines </a> |
+    @* <a asp-page="/Frequency"> Outline Frequency </a> | *@
+    <a asp-page="/Manage"> Manage Local Speakers </a> |
+    <a asp-page="/PT_Overseers"> PT Overseers Contact Info </a>
+
+    <div class="center">
+        <img src="~/images/advice_guy.svg" alt="Advice Guy" width="100" height="100">
+    </div>
+    <div>
+        New to Public Talk Manager?  View the tutorial on
+        <a href="" text-decoration="none">
+            how to use the PT Manager.<hr>
+        </a>
+    </div>
+</div>

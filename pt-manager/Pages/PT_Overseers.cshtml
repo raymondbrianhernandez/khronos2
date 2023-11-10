@@ -1,0 +1,230 @@
+﻿@* PT_Overseers.cshtml *@
+@page
+@model PublicTalk_Manager.Pages.PT_OverseersModel
+@{
+    ViewData["Title"] = "PT Overseers Contact Info - Khronos Pro 2";
+}
+
+@if (Model.Admin?.ToLower() != "super admin" && Model.Admin?.ToLower() != "pt admin")
+{
+    @await Html.PartialAsync("_PublicView")
+}
+else
+{
+    <h4>Public Talk Overseers Address Book</h4>
+
+    <table class="table table-bordered">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th class="center-text">Congregation</th>
+                <th class="center-text">Overseer Name</th>
+                <th class="center-text">Overseer Contact</th>
+                <th class="center-text">Assistant Name</th>
+                <th class="center-text">Assistant Contact</th>
+                <th class="center-text">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.PT_Overseers != null && Model.PT_Overseers.Any())
+            {
+                @foreach (var overseer in Model.PT_Overseers)
+                {
+                    <tr data-id="@overseer.Id">
+                        <td class="center-text congregation-cell">@overseer.Congregation</td>
+                        <td class="center-text overseer-cell">@overseer.Overseer</td>
+                        <td class="center-text contact1-cell">@overseer.Contact1</td>
+                        <td class="center-text assistant-cell">@overseer.Assistant</td>
+                        <td class="center-text contact2-cell">@overseer.Contact2</td>
+                        <td class="center-text">
+                            <button class="btn btn-warning btn-edit" data-id="@overseer.Id">Edit</button>
+                            <button class="btn btn-primary btn-save" data-id="@overseer.Id" style="display: none;">Save</button>
+                            <button class="btn btn-danger btn-delete" data-id="@overseer.Id">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6"><center>No Public Talk Overseers or Assistants found.</center></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr>
+    <h5>Add new Public Talk Overseer / Assistant</h5>
+
+    <form method="post">
+        @using System.Security.Claims
+
+        @Html.AntiForgeryToken()
+
+        <div class="form-group row">
+            <label for="name" class="col-sm-3 col-form-label font-weight-bold">Add new PT Overseer</label>
+            <div class="col-sm-7">
+                <input type="hidden" name="congregation_owner" value="@HttpContext.User.FindFirstValue("congregation_owner")" />
+                <input type="text" class="form-control" id="name" name="overseer" placeholder="Public Talk Overseer's name" required />
+            </div>
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary btn-block">Add</button>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="congregation" class="col-sm-3 col-form-label font-weight-bold">Congregation</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="congregation" name="congregation" placeholder="Congregation" required />
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-success btn-block" onclick="clearForm()">Clear</button>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="contact1" class="col-sm-3 col-form-label font-weight-bold">Contact Info</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="contact1" name="contact1" placeholder="Email or Phone Number" required />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="assistant" class="col-sm-3 col-form-label font-weight-bold">Assistant (optional)</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="assistant" name="assistant" placeholder="Assistant's Name" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="contact2" class="col-sm-3 col-form-label font-weight-bold">Contact Info (optional)</label>
+            <div class="col-sm-7">
+                <input type="text" class="form-control" id="contact2" name="contact2" placeholder="Email or Phone Number" />
+            </div>
+        </div>
+    </form>
+
+    @* JWT CLAIMS (Debugging Purposes) *@
+    @*<table>
+        <tr><th>JWT CLAIM</th><th>VALUE</th></tr>
+        <tr><td><b>Admin Level:</b></td><td>@Model.JwtClaims["Admin"]</td></tr>
+        <tr><td><b>Name:</b></td><td>@Model.JwtClaims["Owner"]</td></tr>
+        <tr><td><b>Congregation:</b></td><td>@Model.JwtClaims["Congregation"]</td></tr>
+        <tr><td><b>Username:</b></td><td>@Model.JwtClaims["Username"]</td></tr>
+        <tr><td><b>is Logged In?:</b></td><td>@Model.JwtClaims["IsLoggedIn"]</td></tr>
+    </table>*@
+
+    @section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".btn-edit").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const row = e.target.closest('tr');
+                    const congregationCell = row.querySelector(".congregation-cell");
+                    const overseerCell = row.querySelector(".overseer-cell");
+                    const contact1Cell = row.querySelector(".contact1-cell");
+                    const assistantCell = row.querySelector(".assistant-cell");
+                    const contact2Cell = row.querySelector(".contact2-cell");
+
+                    const currentCongregation = congregationCell.textContent.trim();
+                    const currentOverseer = overseerCell.textContent.trim();
+                    const currentContact1 = contact1Cell.textContent.trim();
+                    const currentAssistant = assistantCell.textContent.trim();
+                    const currentContact2 = contact2Cell.textContent.trim();
+
+                    congregationCell.innerHTML = `<input type="text" class="form-control" value="${currentCongregation.replace(/"/g, '&quot;')}">`;
+                    overseerCell.innerHTML = `<input type="text" class="form-control" value="${currentOverseer.replace(/"/g, '&quot;')}">`;
+                    contact1Cell.innerHTML = `<input type="text" class="form-control" value="${currentContact1.replace(/"/g, '&quot;')}">`;
+                    assistantCell.innerHTML = `<input type="text" class="form-control" value="${currentAssistant.replace(/"/g, '&quot;')}">`;
+                    contact2Cell.innerHTML = `<input type="text" class="form-control" value="${currentContact2.replace(/"/g, '&quot;')}">`;
+
+                    // Show the "save" button and hide the "edit" button
+                    e.target.style.display = "none";
+                    row.querySelector(".btn-save").style.display = "inline-block";
+                });
+            });
+
+            document.querySelectorAll(".btn-delete").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const row = e.target.closest('tr');
+                    const id = row.getAttribute("data-id");
+
+                    // Confirm the delete action
+                    const confirmDelete = window.confirm("Are you sure you want to delete this overseer?");
+                    if (!confirmDelete) return;
+
+                    // Send the delete request to the server via the API
+                    fetch(`/api/PT_Overseers/delete/${id}`, {
+                        method: 'DELETE',
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.reload();
+                            } else {
+                                console.error('Server responded with status:', response.status);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+
+            document.addEventListener("click", function (e) {
+                if (e.target.classList.contains("btn-save")) {
+                    const row = e.target.closest('tr');
+                    const id = e.target.getAttribute("data-id");
+
+                    // You should adjust these selectors to match your actual form structure
+                    const updatedCongregation = row.querySelector(".congregation-cell input").value;
+                    const updatedOverseer = row.querySelector(".overseer-cell input").value;
+                    const updatedContact1 = row.querySelector(".contact1-cell input").value;
+                    const updatedAssistant = row.querySelector(".assistant-cell input").value;
+                    const updatedContact2 = row.querySelector(".contact2-cell input").value;
+
+                    // Create an object that matches your DTO structure
+                    const updatedData = {
+                        Id: parseInt(id, 10), // Make sure to parse the ID as an integer
+                        Congregation: updatedCongregation,
+                        Overseer: updatedOverseer,
+                        Contact1: updatedContact1,
+                        Assistant: updatedAssistant,
+                        Contact2: updatedContact2
+                    };
+
+                    // Execute the fetch request to update data on the server
+                    fetch("/api/PT_Overseers/edit", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedData)
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Handle a successful response
+                                console.log('Data updated successfully');
+                                window.location.reload(); // Reload the page to update the table
+                            } else {
+                                // Handle errors
+                                console.error('Error with status:', response.status);
+                            }
+                        })
+                        .catch(error => {
+                            // Handle network errors
+                            console.error('Fetch error:', error);
+                        });
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function clearForm() {
+            document.querySelector('[name="overseer"]').value = '';
+            document.querySelector('[name="congregation"]').value = '';
+            document.querySelector('[name="contact1"]').value = '';
+            document.querySelector('[name="assistant"]').value = '';
+            document.querySelector('[name="contact2"]').value = '';
+        }
+    </script>
+    }
+}
