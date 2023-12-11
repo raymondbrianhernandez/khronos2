@@ -6,12 +6,8 @@ if ( session_status() == PHP_SESSION_NONE ) {
 
 // echo $_SESSION['owner'] . ', ' . $_SESSION['congregation'] . ' ';
 echo $_SESSION['owner'];
+echo ' [' . $_SESSION['admin'] . ']';
 
-if ( $_SESSION['admin'] == 'Super Admin' ) {
-    echo ' [Super Admin]';
-} elseif ( $_SESSION['admin'] == 'Admin' ) {
-    echo ' [Admin]';
-} else {
-    echo '';
-}
+if ( $_SESSION['demo_mode'] == TRUE ) { echo "<span style='color:red'> - DEMO MODE</span>"; }
+
 ?>

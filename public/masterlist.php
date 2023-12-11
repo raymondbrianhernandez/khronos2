@@ -8,75 +8,33 @@
 June 7, 2023
 Raymond Brian D. Hernandez 
 Carla Regine R. Hernandez
+
+UPDATES:
+- October 19, 2023 - Optimized Fetch Polygons and Map Markers
+- October 19, 2023 - Optimized <head>
 -->
 
 <?php
 
-if ( session_status() !== PHP_SESSION_ACTIVE ) { 
-    session_start(); 
+if ( session_status() !== PHP_SESSION_ACTIVE ) {
+    session_start();
 }
 
-require_once ( "../private/db_config.php" );
-require ( "../private/secure.php" ); 
-include ( "./php/php_functions.php" );
-include ( "../public/debug.php" );
+require_once '../private/db_config.php';
+require '../private/secure.php';
+include './php/php_functions.php';
+include '../public/debug.php';
 
-$congregation = $_SESSION['congregation'];
-$result = $con->query("SELECT border_name, boundary FROM borders WHERE congregation = '$congregation'");
-$polygons = [];
-while ($row = $result->fetch_assoc() ) {
-    $polygons[] = [
-        'border_name' => $row['border_name'],
-        'boundary' => json_decode($row['boundary']) // assuming boundary is stored as JSON string
-    ];
-}
-$polygonsJson = json_encode($polygons);
-
-// Markers for the map
-if ($con) {
-    // Prepare SQL statement.
-    if ( $stmt = $con->prepare("SELECT `Address_ID`, `Latitude`, `Longitude` FROM `master_territory` WHERE `Owner` = ?" ) ) {
-        
-        // Bind parameters
-        $stmt->bind_param ( "s", $congregation ); // "s" denotes a string.
-        
-        // Execute the statement.
-        if ( $stmt->execute() ) {
-            
-            // Bind result variables.
-            $stmt->bind_result ( $address_ID, $latitude, $longitude );
-            
-            // Create an array to store marker data
-            $markers = [];
-            
-            // Fetch the values and add them to the markers array
-            while ( $stmt->fetch() ) {
-                $markers[] = [
-                    'address_ID' => $address_ID,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude
-                ];
-            }
-            
-            // Convert the markers array to JSON for use in JavaScript
-            $markersJson = json_encode ( $markers );
-            
-        } else {
-            echo "Error: Unable to execute the SQL statement.";
-        }
-        $stmt->close();
-    } else {
-        echo "Error: Unable to prepare the SQL statement.";
-    }
-} else {
-    echo "Error: mysqli is not initialized properly.";
-}
-
-// Users GPS Location
-$lon = $_SESSION['centerX'];
-$lat = $_SESSION['centerY']; 
+$congregation   = $_SESSION['congregation'];
+$polygons       = fetchPolygons ( $con, $congregation );
+$polygonsJson   = json_encode ( $polygons );
+$markers        = fetchMapMarkers ( $con, $congregation );
+$markersJson    = json_encode ( $markers );
+$lon            = $_SESSION['centerX'];
+$lat            = $_SESSION['centerY'];
 
 ?>
+
 
 <!DOCTYPE html> 
 <html lang="en">
@@ -90,9 +48,8 @@ $lat = $_SESSION['centerY'];
     <link rel="stylesheet" media="all" href="./stylesheets/dashboard.css"/>
     <link rel="stylesheet" media="all" href="./stylesheets/masterlist.css?v=1"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Map Libre General-->
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl/dist/maplibre-gl.css'/>
     <script src='https://unpkg.com/maplibre-gl/dist/maplibre-gl.js'></script>
@@ -101,78 +58,45 @@ $lat = $_SESSION['centerY'];
     <!-- Map Libre Geocoder -->
     <script src="https://unpkg.com/@maplibre/maplibre-gl-geocoder@1.2.0/dist/maplibre-gl-geocoder.min.js"></script>
 </head>
-    
+
 <body>
     <header>
-        <?php include ( "../private/shared/navigation.php" ); ?>
+        <?php include '../private/shared/navigation.php'; ?>
     </header>
     
     <div class="main-container">
         <div class="sub-navigation centered">
             <h4><b>Master Territory Manager</b></h4>
             <a href="">Border Manager</a> | <a href="">Names Database</a> | <a href="">Publisher Assignments</a>
-            <p><button id="toggleStyleButton"><b>Toggle Map View </b> (Satellite or Regular)</button></p>  
+            <p><button id="toggleStyleButton"><b>Toggle Map View </b> ( Satellite or Regular )</button></p>  
         </div>
         <div class="master-territory">
             <div class="boundaries">
-                <button id="drawPolygonButton"> Draw a New Border </button>
                 <input type="text" id="border_name" placeholder="Enter Border Name" required/>
+                <button id="drawPolygonButton"> Draw Border </button>
                 <button id="savePolygonButton" onclick="savePolygon()"> Save </button>
-                <script>
-                    function savePolygon() {
-                        const borderNameInput = document.getElementById('border_name');
-                        const rawData = {
-                            boundary: currentPolygon,
-                            border_name: borderNameInput.value,
-                            congregation: congregationData,
-                        };
-                        fetch('../public/save_polygon.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(rawData),
-                        })
-                        .then(response => response.text())
-                        .then(data => {
-                            document.getElementById('query_results').innerHTML = data;
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-                    }
-                </script>
-                <div id="query_results"></div>
 
                 <div class="centered saved-borders">
                     <hr>
                     <h5>Saved Borders</h5>
                 </div>
+
                 <div id="savedBoundary">
                     <?php
-
-                    if ( $con ) { // Check if $mysqli is initialized properly.
-                        // Prepare SQL statement.
-                        if ( $stmt = $con->prepare ( "SELECT border_name, boundary FROM borders WHERE congregation = ? ORDER BY border_name" ) ) {
-                            
-                            // Bind parameters
-                            $stmt->bind_param ( "s", $congregation ); // "s" denotes a string. 
-                            
-                            // Execute the statement.
+                    if ( $con ) {
+                        $sql = "SELECT border_name, boundary FROM borders WHERE congregation = ? ORDER BY border_name";
+                        if ( $stmt = $con->prepare ( $sql ) ) {
+                            $stmt->bind_param ( "s", $congregation );
                             if ( $stmt->execute() ) {
-                                
-                                // Bind result variables.
-                                $stmt->bind_result ( $borderName, $boundary );
-                                
-                                // Fetch the values.
-                                while ( $stmt->fetch() ) {
-                                    $borderName = htmlspecialchars ( $borderName ); // Escape the output to prevent XSS
-                                    $boundary = htmlspecialchars ( $boundary );
-                                    echo "<div class='border-item'>";
-                                    echo "&nbsp;&nbsp;<a href='#' class='border-link' data-name='{$borderName}' data-boundary='{$boundary}'><b>{$borderName}</b></a>";
-                                    echo "<button class='edit-button' data-name='{$borderName}'>Edit</button>";
-                                    echo "<button class='delete-button' data-name='{$borderName}'>Delete</button>";
-                                    echo "</div>";
+                                $result = $stmt->get_result();
+                                while ( $row = $result->fetch_assoc() ) {
+                                    $borderName = htmlspecialchars ( $row['border_name'] );
+                                    $boundary = htmlspecialchars ( $row['boundary'] );
+                                    echo "<div class='border-item'>
+                                            &nbsp;&nbsp;<a href='#' class='border-link' data-name='$borderName' data-boundary='$boundary'><b>$borderName</b></a>
+                                            <button class='edit-button' data-name='$borderName'>Edit</button>
+                                            <button class='delete-button' data-name='$borderName'>Delete</button>
+                                        </div>";
                                 }
                             } else {
                                 echo "Error: Unable to execute the SQL statement.";
@@ -191,12 +115,13 @@ $lat = $_SESSION['centerY'];
             <div class="map-area">
                 <div id="map"></div>
             </div>
+            
         </div>
     </div>
 
     <footer>
         <div>
-            <?php include ( "../private/shared/footer.php" ); ?>
+            <?php include '../private/shared/footer.php'; ?>
         </div>
     </footer>
 </body>
@@ -219,7 +144,7 @@ document.addEventListener ( "DOMContentLoaded", function() {
     const map = new maplibregl.Map({
         container: 'map', // container id
         center: [ <?php echo json_encode($lon); ?>, <?php echo json_encode($lat); ?> ],
-        zoom: 11,
+        zoom: 16,
         antialias: true,
         pitch: 0, // tilts map in degrees
         bearing: 0, // rotates map in degrees
@@ -706,40 +631,37 @@ document.addEventListener ( "DOMContentLoaded", function() {
 
 <script>
 // Function to handle edit button click
-function handleEditButtonClick(borderName) {
-    // Implement the logic to allow editing the polygon with the specified borderName
-    // You can open a modal or some other interface for editing here
-    // Example: Load the polygon's data and enable editing
-    const borderLink = document.querySelector(`.border-link[data-name='${borderName}']`);
-    const boundaryData = JSON.parse(borderLink.getAttribute('data-boundary'));
+function handleEditButtonClick ( borderName ) {
+    const borderLink = document.querySelector ( `.border-link[data-name='${borderName}']` );
+    const boundaryData = JSON.parse ( borderLink.getAttribute ( 'data-boundary' ) );
 
     // TODO: Implement the logic to allow editing the polygon
 }
 
 // Function to handle delete button click
-function handleDeleteButtonClick(borderName) {
-    if (confirm(`Are you sure you want to delete the border "${borderName}"?`)) {
+function handleDeleteButtonClick ( borderName ) {
+    if ( confirm ( `Are you sure you want to delete the border "${borderName}"?` ) ) {
         // Implement the logic to delete the border with the specified borderName
         // Example: Send an AJAX request to delete the border
-        const congregationData = <?php echo json_encode($_SESSION['congregation']) ?>;
-        fetch('../public/delete_border.php', {
+        const congregationData = <?php echo json_encode ( $_SESSION['congregation'] ) ?>;
+        fetch ( '../public/delete_border.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
+            body: JSON.stringify ({
                 border_name: borderName,
                 congregation: congregationData,
             }),
         })
-        .then(response => response.text())
-        .then(data => {
-            if (data === 'success') {
+        .then ( response => response.text() )
+        .then ( data => {
+            if ( data === 'success' ) {
                 // Border deleted successfully, you can update the UI as needed
-                alert(`Border "${borderName}" deleted successfully.`);
+                alert ( `Border "${borderName}" deleted successfully.` );
                 // TODO: Remove the border from the UI or reload the page
             } else {
-                alert(`Failed to delete border "${borderName}".`);
+                alert(`Failed to delete border "${borderName}". Reason: ${data}`);
             }
         })
         .catch((error) => {
@@ -761,6 +683,29 @@ deleteButtons.forEach(button => {
     const borderName = button.getAttribute('data-name');
     button.addEventListener('click', () => handleDeleteButtonClick(borderName));
 });
+
+function savePolygon() {
+    const borderNameInput = document.getElementById ( 'border_name' );
+    const rawData = {
+        boundary: currentPolygon,
+        border_name: borderNameInput.value,
+        congregation: congregationData,
+    };
+    fetch ( '../public/save_polygon.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify ( rawData ),
+    })
+    .then ( response => response.text() )
+    .then ( data => {
+        document.getElementById ( 'query_results' ).innerHTML = data;
+    })
+    .catch ( ( error ) => {
+        console.error ( 'Error:', error );
+    });
+}
 </script>
 
 

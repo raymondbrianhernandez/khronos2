@@ -8,7 +8,70 @@
 June 7, 2023
 Raymond Brian D. Hernandez 
 Carla Regine R. Hernandez
+
+REVISION:
+11/29/2023 - Login page checks user sessions so user is redirected to dashboard if user is still logged
 -->
+
+<?php 
+
+require '../private/db_config.php';
+// include 'debug.php';
+include 'php/php_functions.php';
+require '../../vendor/autoload.php';
+use \Firebase\JWT\JWT;
+
+if ( session_status() == PHP_SESSION_NONE ) {
+    session_start();
+}
+
+if ( $_SESSION['logged_in'] ) {
+    // JWT Tokens for both PHP and C# Pages
+    $key = "An6WebAppN@G1n@w@n1R@ym0nd!?!@##";
+    $computedKid = hash ( 'sha256', $key );
+
+    $tokenId = base64_encode ( random_bytes ( 32 ) );
+    date_default_timezone_set ('America/Los_Angeles');
+    $issuedAt = time();
+    $expire = $issuedAt + 3600 * 24; // Token valid for 1 day
+
+    $data = [
+        'iat' => $issuedAt,
+        'jti' => $tokenId,
+        'iss' => 'khronos.pro',
+        'aud' => 'khronos.pro',
+        'exp' => $expire,
+        'data' => [
+            'id' => $_SESSION['id'],
+            'admin' => $_SESSION['admin'],              
+            'owner' => $_SESSION['owner'],             
+            'congregation' => $_SESSION['congregation'],       
+            'username' => $_SESSION['username'],
+            'logged_in' => $_SESSION['logged_in'],
+        ]
+    ];
+
+    $header = [
+        "typ" => "JWT",
+        "alg" => "HS256",
+        "kid" => $computedKid
+    ];
+
+    $jwt = JWT::encode ( $data, $key, 'HS256', null, $header );
+    
+    setcookie ( "auth_token", $jwt, [
+        'expires' => $expire,
+        'path' => '/',
+        'domain' => '.khronos.pro', // Note the leading dot, which includes all subdomains
+        'secure' => true, // Required when SameSite=None
+        'httponly' => true, // Good practice for security
+        'samesite' => 'None' // Allows cross-domain usage
+    ]);
+
+    redirect ( "dashboard", "Welcome back {$_SESSION['owner']}." );
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,18 +86,7 @@ Carla Regine R. Hernandez
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" media="all" href="./stylesheets/styles.min.css"/>
     <link rel="stylesheet" media="all" href="./stylesheets/animatedbackground.css"/>
-    <style>
-           .coming-soon {
-                color: red;
-                font-size: 10pt;
-                font-weight: bold;
-            }
-            .almost-complete {
-                color: green;
-                font-size: 10pt;
-                font-weight: bold;
-            } 
-        </style>
+    <link rel="stylesheet" media="all" href="./stylesheets/login.css"/>
 </head>
 
 <body>
@@ -68,6 +120,8 @@ Carla Regine R. Hernandez
                                 <li><a class="dropdown-item" href="../public/onesearch-public" target="_blank"> One Search </a></li>
                                 <li><a class="dropdown-item" href="https://arbhie.com/projects/bible-game/" target="_blank"> Logikos Trivia Game </a></li>
                                 <li><a class="dropdown-item" href="https://emoji.khronos.pro" target="_blank"> Bible Emoji Flashcards </a></li>
+                                <li><a class="dropdown-item" href="https://api.khronos.pro"> Khronos API </a></li>
+                                <li><a class="dropdown-item active" href="../private/admin.php"> Developer's Access </a></li>
                                 <!-- ... -->
                             </ul>
                         </li>
@@ -137,6 +191,29 @@ Carla Regine R. Hernandez
                                         Not registered yet? Create a free account <a href='registration'> here </a>
                                     </p>
                                 </form>
+
+                                <?php
+                                    require '../private/db_config.php';
+                                    $querySettings = "SELECT * FROM settings LIMIT 1";
+                                    $resultSettings = mysqli_query ( $con, $querySettings );
+                                    $rowSettings = mysqli_fetch_assoc ( $resultSettings );
+                                    $demo_login = $rowSettings['demo_login'];
+
+                                    if ( $demo_login ) {
+                                ?>
+                                    <form name="form" class="text-center" action="../private/authentication" method="POST">
+                                        <input type="hidden" name="usertype" value="demo">
+                                        
+                                        <p class="text-muted" style="text-align:center; color:white">
+                                            Want to explore Khronos Pro? Login as a demo user
+                                        </p>
+                                        <div class="mb-3">
+                                            <button class="btn btn-primary d-block w-100" type="submit"> Login as Demo </button>
+                                        </div>
+                                    </form>
+                                <?php 
+                                    } 
+                                ?>
                             </div>
                         </div>
                     </div>     
@@ -145,7 +222,7 @@ Carla Regine R. Hernandez
                     <hr>
                     <h2> Developer Notes </h2>
                 </div>
-                <?php include ( "../private/blog.php" ) ?>
+                <?php include '../private/blog.php' ?>
             </div>
         </section>
         <!-- End: Login Form Basic -->
@@ -158,7 +235,7 @@ Carla Regine R. Hernandez
         <div class="container  py-4 py-lg-5">
             <p class="mb-0" style="color:white;">
                 &copy; <?php echo '2022 - ' . date('Y'); ?> Khronos Pro 2 by 
-                <a href="https://gudeprojects.be" target="_blank" style="color:white;"> GudeProjects </a>
+                <a href="https://arbhie.com" target="_blank" style="color:white;"> arbhie.com </a>
             </p>
         </div>
     </footer>

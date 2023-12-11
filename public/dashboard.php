@@ -67,21 +67,21 @@ Carla Regine R. Hernandez
 
 <body>
 <header>
-    <?php include ( "../private/shared/navigation.php" ); ?>
+    <?php include '../private/shared/navigation.php'; ?>
 
     <div class="mainbody">
         
         <div class="row d-flex justify-content-center"> 
             <p style="text-align:center;">
-                <?php include ( "greetings.php" ); ?>  
+                <?php include 'greetings.php' ?>  
             </p>
             <br>
         </div>
-        <?php include ( "dashboard-widgets.php" ) ?>
+        <?php include 'dashboard-widgets.php' ?>
     </div>
     <br>
     <div>
-        <?php include ( "../private/shared/footer.php" ); ?>
+        <?php include '../private/shared/footer.php'; ?>
     </div>
 </header>   
 

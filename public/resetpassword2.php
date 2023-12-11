@@ -124,7 +124,7 @@ Carla Regine R. Hernandez
         <div class="container  py-4 py-lg-5">
             <p class="mb-0" style="color:white;">
                 &copy; <?php echo '2022 - ' . date('Y'); ?> Khronos Pro 2 by 
-                <a href="https://gudeprojects.be" target="_blank" style="color:white;"> Raymond & Carla Hernandez </a>
+                <a href="https://arbhie.com" target="_blank" style="color:white;"> arbhie.com </a>
             </p>
         </div>
     </footer>

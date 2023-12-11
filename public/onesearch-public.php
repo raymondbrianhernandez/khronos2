@@ -32,7 +32,7 @@ include ( "debug.php" );
 
 <body>
     <header>
-        <!-- < ?php include ( "../private/shared/navigation.php" ); ?> -->
+        <center><button onclick="closeWindow()" style="color: black"> Go Back </button></center>
 
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <p></p>
@@ -118,38 +118,43 @@ include ( "debug.php" );
             <button id="check_all" style="color: black;">Check All</button>
             <button id="uncheck_all" style="color: black;">Uncheck All</button>
             <br><br>
-            </form>
+            
             <input type="submit" value="Search from Selected Sites" id="submit_button">
 
             <script>
-                document.getElementById("check_all").addEventListener("click", function() {
-                    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                    for (var i = 0; i < checkboxes.length; i++) {
-                        checkboxes[i].checked = true;
-                    }
+                function closeWindow() {
+                    window.close();
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.getElementById("check_all").addEventListener("click", function() {
+                        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                        for (var i = 0; i < checkboxes.length; i++) {
+                            checkboxes[i].checked = true;
+                        }
+                    });
+
+                    document.getElementById("uncheck_all").addEventListener("click", function() {
+                        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                        for (var i = 0; i < checkboxes.length; i++) {
+                            checkboxes[i].checked = false;
+                        }
+                    });
+
+                    document.getElementById("submit_button").addEventListener("click", function(event) {
+                        event.preventDefault();
+                        
+                        var street = document.getElementsByName("street")[0].value;
+                        var city = document.getElementsByName("city")[0].value;
+
+                        if (!street || !city) {
+                            alert("Please fill out all required fields.");
+                            return; // exit the function without submitting the form
+                        }
+
+                        document.getElementById("search_form").submit();
+                    });
                 });
-
-                document.getElementById("uncheck_all").addEventListener("click", function() {
-                    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                    for (var i = 0; i < checkboxes.length; i++) {
-                        checkboxes[i].checked = false;
-                    }
-                });
-
-                document.getElementById("submit_button").addEventListener("click", function(event) {
-                    event.preventDefault();
-                    
-                    var street = document.getElementsByName("street")[0].value;
-                    var city = document.getElementsByName("city")[0].value;
-
-                    if (!street || !city) {
-                        alert("Please fill out all required fields.");
-                        return; // exit the function without submitting the form
-                    }
-
-                    document.getElementById("search_form").submit();
-                });
-
             </script>
         </div>
         <!-- ***************************************************************** -->

@@ -1,6 +1,6 @@
 <div class="row d-flex justify-content-center">
     <!-- SERVICE RECORDS -->
-    <h4><b> Service Reports Summary for <?php echo date('F Y') ?></b></h4>    
+    <h4><b> Service Reports Summary for <?php echo date ( 'F Y' ) ?></b></h4>    
     
     <!-- MY GOAL -->
     <div class="col-md-6 col-xl-3 mb-4">
@@ -9,7 +9,7 @@
                 <div class="row align-items-center no-gutters">
                     <div class="col me-2">
                         <div class="text-uppercase text-primary fw-bold text-xs mb-1">
-                            <span> My Task </span>
+                            <span> My Task/Goal </span>
                         </div>
                         <div class="text-dark fw-bold h5 mb-0">
                             <span> <?= $_SESSION['goal'] ?> </span>
@@ -184,7 +184,13 @@
                         <label for="name"><b> Password: </b></label>
                     </div>
                     <div class="col-75" style="text-align:left">
-                        <a href="javascript:void(0);" onclick="openChangePasswordWindow()">Change Password</a>
+                        <?php
+                        if ( isset ( $_SESSION['demo_mode'] ) && $_SESSION['demo_mode'] == FALSE ) {
+                            echo '<a href="javascript:void(0);" onclick="openChangePasswordWindow()">Change Password</a>'; 
+                        } else {
+                            echo '<i>Password can\'t be changed on demo mode</i>';
+                        }
+                        ?>
                     </div>
                     <hr>
                     <div class="col-25" style="text-align:center">
