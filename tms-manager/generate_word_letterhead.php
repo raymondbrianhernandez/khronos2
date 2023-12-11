@@ -40,10 +40,10 @@ $fontStyleDateVerse = array(
     'bold' => true
 );
 
-$phpWord->addTableStyle('whiteBorderTable', $tableStyle);
+$phpWord->addTableStyle ( 'whiteBorderTable', $tableStyle );
 
 // Create the table using the white-border style
-$letterheadTable = $section->addTable('whiteBorderTable');
+$letterheadTable = $section->addTable ( 'whiteBorderTable' );
 
 // First Row
 $letterheadTableRow1 = $letterheadTable->addRow();
@@ -65,7 +65,7 @@ $letterheadTableRow2 = $letterheadTable->addRow();
 
 // First cell of the second row
 $letterheadTableCell3 = $letterheadTableRow2->addCell ( null, $cellStyle );
-$letterheadTableCell3->addText ( $commonData['date'] . " | " . $commonData['verse'], $fontStyleDateVerse );
+$letterheadTableCell3->addText ( $commonData['date'] . " | " . $commonData['verse'] . " | " . $commonData['week'], $fontStyleDateVerse );
 
 // Second cell of the second row
 $letterheadTableCell4 = $letterheadTableRow2->addCell ( null, $cellStyle ); 

@@ -8,24 +8,30 @@
 June 7, 2023
 Raymond Brian D. Hernandez 
 Carla Regine R. Hernandez
+
+REVISIONS
+11/24/2023 - Clean up code.  Add a feature that warns the overseer if the assignee 
+            have assignments overlaps or too close from previous ( < 1 month ) - R.Hernandez
 -->
 
 <?php
+
+include 'db.php';
+include '../public/debug.php';
+include 'all_names.php';
+require '../private/secure.php';
 
 if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-include ( 'db.php' );
-include ( '../public/debug.php' );
-include ( 'all_names.php' );
-require ( '../private/secure.php' );
-
-if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM-Admin' ) {
+if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM Admin' ) {
     $authorized = TRUE;
 } else {
     $authorized = FALSE;
 }
+
+$_SESSION['workbook_year'] = $_SESSION['service_year'];
 
 ?>
 
@@ -45,21 +51,21 @@ if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM-Admin' )
 
 <body>
     <header>
-        <?php include ( "../private/shared/navigation.php" ); ?>
+        <?php include '../private/shared/navigation.php'; ?>
         
         <div style="margin: 0 auto; text-align: center;">
-            <?php include ( 'tms-navigation.php' ) ?>
+            <?php include 'tms-navigation.php'; ?>
         </div>
 
         <!-- THIS PART IS ONLY SHOWN ON SUPER ADMINS AND ADMINS -->
         <?php if ( $authorized ) { ?>
 
             <div style="width: 25%; margin: 0 auto; text-align: center;">
-                <?php include ( 'query-week.php' ); ?>
+                <?php include 'query-week.php'; ?>
             </div>
 
             <div style="width: 75%; margin: 0 auto; text-align: center;">
-                <?php include ( 'query-week-result.php' ); ?>
+                <?php include 'query-week-result.php'; ?>
                 <br>    
             </div>
 
@@ -70,13 +76,13 @@ if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM-Admin' )
                     <?php include 'assignments.php'; ?>
                 </div>
             </div>
-            <?php 
-                include 'public-view.php'; 
-            } 
-            ?>
-        
-    </header>   
+            <?php include 'public-view.php'; 
+        } ?>
 
+    <?php include '../private/shared/footer.php'; ?>
+        
+    </header>
+    
 </body>
 </html>
 

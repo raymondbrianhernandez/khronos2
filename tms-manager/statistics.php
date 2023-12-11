@@ -20,7 +20,7 @@ include ( 'db.php' );
 include ( '../public/debug.php' );
 require ( '../private/secure.php' );
 
-if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'Admin' ) {
+if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM Admin' ) {
     $authorized = TRUE;
 } else {
     $authorized = FALSE;

@@ -14,15 +14,16 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-require '../tms-manager/debug.php';
-require '../tms-manager/db.php';
+require 'debug.php';
+require 'db.php';
 
-$monthPart = explode(" ", $_SESSION['week_select']);
+$monthPart    = explode ( " ", $_SESSION['week_select'] );
 $congregation = $_SESSION['congregation'];
-$start_time = $_SESSION['midweek_time'];
-$month = $monthPart[0];
-$language = $_SESSION['language'];
-$isTagalog = true;
+$start_time   = $_SESSION['midweek_time'];
+$month        = $monthPart[0];
+$language     = $_SESSION['language'];
+$isTagalog    = true;
+$year         = $_SESSION['workbook_year'];
 
 if ( $language != "Tagalog" ) {
     $isTagalog = false;
@@ -33,7 +34,7 @@ echo "<h3>\$congregation: " . strtoupper ( $congregation ) . "</h3>";
 echo "<h3>\$language: {$language}</h3>";
 echo "*********************************************************************************<br>";
 
-$song_query = "SELECT * FROM songs WHERE year = YEAR(CURDATE()) AND select_week LIKE '$month%'";
+$song_query = "SELECT * FROM songs WHERE year = $year AND congregation = '$congregation' AND select_week LIKE '$month%'";
 $song_result = mysqli_query ( $tmscon, $song_query );
 
 if ( $song_result ) {
@@ -76,7 +77,7 @@ if ( $song_result ) {
         echo "--------------------------<br>";
 
         // Fetch assignment data for the current week
-        $query = "SELECT * FROM assignments WHERE congregation = '$congregation' AND year = YEAR(CURDATE()) AND week = '{$commonData['week']}'";
+        $query = "SELECT * FROM assignments WHERE congregation = '$congregation' AND year = '$year' AND week = '{$commonData['week']}'";
         $result = mysqli_query ( $tmscon, $query );
 
         if ( $result ) {

@@ -1,13 +1,10 @@
 <?php
 
-// Extract duration time from each assignment
-preg_match ( '/\((\d+)\W+min\.\)/', $row['part'], $matches );
-
 // Check if a duration is found in the assignment
 if ( !empty ( $matches ) ) {
     // Extract the minutes from the match
     $durationMinutes = ( int ) $matches[1];
-
+    
     // Calculate the end time for this assignment
     $endTime = $startTime + ( $durationMinutes * 60 ); // Convert minutes to seconds
 

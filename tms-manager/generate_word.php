@@ -1,16 +1,21 @@
 <?php
+// generate_word.php
 
 if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-include '../public/debug.php';
-require '../tms-manager/db.php';
-require '../../vendor/autoload.php';
+include 'debug.php';
+include '_functions.php';
+include '_globals.php';
+require 'db.php';
+require 'vendor/autoload.php';
+
+$current_timezone = date_default_timezone_get();
 
 /************ All phpWord() related settings are here ************/
-require '../../vendor/phpoffice/phpword/bootstrap.php';
-$phpWord = new \PhpOffice\PhpWord\PhpWord();
+$phpWord = new \PhpOffice\PhpWord\PhpWord(); 
+
 $sectionStyle = array(
     'paperSize' => 'A4',
     'marginLeft' => 720,    // 0.5 inch in twips (1 inch = 1440 twips)
@@ -27,14 +32,12 @@ $availableHeight   = 427_680;
 $desiredCellHeight = 300;
 /*****************************************************************/
 
-define ( 'DEFAULT_MEETING_START', '7:00' );
-define ( 'DEFAULT_MEETING_NEXT', '7:05' );
-
-$month          = trim ( explode ( " ", $_SESSION['week_select'] )[0] );
-$congregation   = $_SESSION['congregation'];
-$start_time     = $_SESSION['midweek_time'];
-$language       = $_SESSION['language'];
-$isTagalog      = true;
+$month        = trim ( explode ( " ", $_SESSION['week_select'] )[0] );
+$year         = $_SESSION['workbook_year'];
+$congregation = $_SESSION['congregation'];
+$start_time   = $_SESSION['midweek_time'];
+$language     = $_SESSION['language'];
+$isTagalog    = true;
 
 if ( $language != "Tagalog" ) { 
     $isTagalog = false; 
@@ -51,10 +54,8 @@ if ( isset ( $_POST['view_full_parts'] ) ) {
     $_SESSION['$isFullParts'] = !$_SESSION['$isFullParts']; // Toggles
 }
 
-include 'generate_word_functions.php';
-
 // Prepared statements to avoid SQL injection
-$song_result = getSongsForMonth ( $tmscon, $month );
+$song_result = getSongsForMonth ( $tmscon, $month, $year, $congregation );
 
 if ( $song_result ) {
     $weekCounter = 0; // Initialize a counter to keep track of the weeks
@@ -72,7 +73,7 @@ if ( $song_result ) {
         /******************** Assignments Section ************************/
         include 'generate_word_assignments_styles.php'; 
         
-        $result = getAssignmentsForWeek ( $tmscon, $congregation, $commonData['week']);
+        $result = getAssignmentsForWeek ( $tmscon, $congregation, $commonData['week'], $year );
 
         if ( $result ) {
             $assignmentCounter = 0; // Initialize a counter to keep track of assignments
@@ -86,88 +87,68 @@ if ( $song_result ) {
             $loopCount       = 0;
 
             // Fetch all results first
+            $result->data_seek(0);
             $rows = mysqli_fetch_all ( $result, MYSQLI_ASSOC );
 
             // Count the total rows
             $totalRows = count ( $rows );
+
+            include '_livingAsChristiansIndex.php';
             
             for ( $i = 0; $i < $totalRows; $i++ ) { 
                 $row = $rows[$i];
                 $loopCount++;
 
-                // Extract duration time from each assignment
+                // Extract duration time from each assignment, then add it to time
+                preg_match ( '/\((\d+)\W+min\.\)/', $row['part'], $matches );
                 include 'extract_time.php';
-
-                // At the last loop, display closing song and prayer
-                 if ( $assignmentCounter == $totalRows - 1 ) {
-                    $closingTime = date ( "g:i", strtotime ( $commonData['time'] ) );
-                    
-                    // Create a new row in the table
-                    $lastRow = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );  
-
-                    // Column 1: Display Assignment (4 inches wide)
-                    $cellClosingText = "{$closingTime} • {$commonData['song_close']} and Closing Prayer";
-                    $cellClosing = $lastRow->addCell ( null, $cellStyle4in, $noSpace );  // Add an empty cell with a specific width
-                    $cellClosing->addText ( $cellClosingText, $defaultFont );  // Add the opening text to the cell
-
-                    // Column 2: Optional (1.27 inch wide)
-                    // Just uncomment the next two lines and replace 'Your Optional Text' with whatever text you'd like to insert.
-                    $cellOptional = $lastRow->addCell ( null, $cellStyle1_27in, $noSpace );  // Add a cell with a specific width
-                    $cellOptional->addText ( 'Prayer:', $fontStyleItalic, $rightAlignedParagraph ); 
-                    //$row3->addCell ( null, $cellStyle1_27in, $noSpace );  // The 2nd column remains blank
-
-                    // Column 3: Display assignee's name (2 inches wide)
-                    $cellAssignee = $lastRow->addCell ( null, $cellStyle2in, $noSpace );  // Add a cell for the assignee's name
-                    $cellAssignee->addText ( $row['assignee'], $defaultFont );  // Add the assignee's name to the name cell
-                    break;
-                }
 
                 /**************************  Main loop of assignments ***********************/
                 /****************************************************************************/
                 $rowAssignment = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );;
-
+                
+                // Column 1: Display Assignment (4 inches wide)
                 if ( $isFullParts ) { // toggled from report.php
                     $trimmedPart = trimParts ( $row['part'] ); 
                     $partTitle = "{$commonData['time']} • {$trimmedPart}"; 
                 } else {
                     $partTitle = "{$commonData['time']} • {$row['part']}"; 
                 }
-                
-                // Column 1: Display Assignment (4 inches wide)
                 $cellAssignment = $rowAssignment->addCell ( null, $cellStyle4in, $noSpace );
                 $cellAssignment->addText ( $partTitle, $defaultFont ); 
-
-                if ( $partCounter == 3 ) { // Bible Reader first
+                
+                // Column 2: Optional (1.27 inch wide)
+                $lowercasePart = strtolower($row['part']);
+                
+                if (strpos($lowercasePart, 'pagbabasa ng bibliya') !== false ||
+                    strpos($lowercasePart, 'bible reading') !== false ||
+                    strpos($lowercasePart, 'paggawa ng mga alagad') !== false ||
+                    (strpos($lowercasePart, 'pahayag') !== false && strpos($lowercasePart, 'th') !== false) ||
+                    strpos($lowercasePart, 'ipaliwanag ang paniniwala mo') !== false
+                ) {
                     $partItalics = $isTagalog ? 'Estudyante: ' : 'Student: ';
-
-                } elseif ( $partCounter > 2 && $partCounter < 7 ) {
-                    // If an assignment contains the words "Talk" then it doesn't need a student assistant
-                    if ( ( strpos ( $row['part'], 'Pahayag') !== false 
-                        || strpos ( $row['part'], 'Talk' ) !== false ) 
-                        && ( $partCounter == 6 ) ) {
-                            $partItalics = $isTagalog ? 'Estudyante: ' : 'Student: ';
-                    }
-                    else {
-                        $partItalics = $isTagalog ? 'Estudyante/Katulong: ' : 'Student/Assistant: ';
-                    }
-
-                } elseif ( $assignmentCounter == $totalRows - 3 ) { // CBS
+                } else if (
+                    strpos($lowercasePart, 'pagpapasimula ng pakikipag-usap') !== false ||
+                    strpos($lowercasePart, 'pagdalaw-muli') !== false ||
+                    strpos($lowercasePart, 'paggawa ng mga alagad') !== false ||
+                    strpos($lowercasePart, 'ipaliwanag ang paniniwala mo') !== false
+                ) {
+                    $partItalics = $isTagalog ? 'Estudyante/Katulong: ' : 'Student/Assistant: ';
+                } else if (strpos($lowercasePart, 'pag-aaral ng kongregasyon sa bibliya') !== false) {
                     $partItalics = $isTagalog ? 'Konduktor/Tagabasa: ' : 'Conductor/Reader: ';
                 } else {
                     $partItalics = '';
                 }
-                
+               
+                $cellItalics = $rowAssignment->addCell ( null, $cellStyle1_27in, $noSpace );  // Add a cell with a specific width
+                $cellItalics->addText ( $partItalics, $fontStyleItalic, $rightAlignedParagraph );  // Add your optional text to the cell
+
+                // Column 3: Display assignee's name (2 inches wide)
                 if ( $row['assistant'] == " " || !$row['assistant'] ) {
                     $partAssignee = $row['assignee'];
                 } else {
                     $partAssignee = $row['assignee'] . ' / ' . $row['assistant'];
                 }
-                
-                // Column 2: Optional (1.27 inch wide)
-                $cellItalics = $rowAssignment->addCell ( null, $cellStyle1_27in, $noSpace );  // Add a cell with a specific width
-                $cellItalics->addText ( $partItalics, $fontStyleItalic, $rightAlignedParagraph );  // Add your optional text to the cell
-
-                // Column 3: Display assignee's name (2 inches wide)
                 $cellAssignee = $rowAssignment->addCell ( null, $cellStyle2in, $noSpace );  // Add a cell for the assignee's name
                 $cellAssignee->addText ( $partAssignee, $defaultFont );  // Add the assignee's name to the name cell
                 /****************************************************************************/
@@ -175,19 +156,9 @@ if ( $song_result ) {
                 // Increment the assignment counter
                 $assignmentCounter++;
                 $partCounter++;
-            
-                // TREASURES FROM GOD'S WORD
-                if ( $assignmentCounter == 1 ) { 
-                    $rowAssignment = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );; 
-
-                    // Column 1 & 2: Display Header (5.27 inches wide)
-                    $cellAssignment = $rowAssignment->addCell ( null, array_merge ( $cellStyle1_2in, $cellTreasures ) );
-                    $headerContent = $isTagalog ? "KAYAMANAN MULA SA SALITA NG DIYOS" : "TREASURES FROM GOD'S WORD";
-                    $cellAssignment->addText ( $headerContent, $fontStyleWhiteBold ); 
-                }
 
                 // APPLY YOURSELF TO THE FIELD MINISTRY
-                if ( $assignmentCounter == 4 ) {
+                if ( $assignmentCounter == 3 ) {
                     $rowAssignment = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );;
 
                     // Column 1 & 2: Display Header (5.27 inches wide)
@@ -197,7 +168,7 @@ if ( $song_result ) {
                 }
 
                 // LIVING AS CHRISTIANS & Middle Song
-                if ( $assignmentCounter == 7 ) {
+                if ( $i == $indexToKeep - 1 ) {
                     $rowAssignment = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );;
                     $rowMiddleSong = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );;
 
@@ -213,8 +184,44 @@ if ( $song_result ) {
                     $cellMiddle =  $rowMiddleSong->addCell ( null, $cellStyle4in, $noSpace );  // Add an empty cell with a specific width
                     $cellMiddle->addText ( $cellMiddleText, $defaultFont );  // Add the opening text to the cell
                 }
-
+                $commonData['time'] = date ( "g:i", strtotime ( $commonData['time'] ) + 30 * 60 ); // Add 30 mins
             }
+            $row3 = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) ); 
+            /* CLOSING COMMENTS */
+            // Column 1: Display Assignment (4 inches wide)
+            $openingPart = $isTagalog ? "Pangwakas na Komento (3 min.)" : "Closing Comments (1 min.)";
+
+            $cellOpeningText = "{$commonData['time']} • {$openingPart}";
+            $cellOpening = $row3->addCell ( null, $cellStyle4in, $noSpace );  // Add an empty cell with a specific width
+            $cellOpening->addText ( $cellOpeningText, $defaultFont );  // Add the opening text to the cell
+
+            // Column 2: Optional (1.27 inch wide)
+            $row3->addCell ( null, $cellStyle1_27in );  // The 2nd column remains blank
+
+            // Column 3: Display assignee's name (2 inches wide)
+            $cellAssignee = $row3->addCell ( null, $cellStyle2in, $noSpace );  // Add a cell for the assignee's name
+            $commonData['time'] = date ( "g:i", strtotime ( $commonData['time'] ) + 3 * 60 ); // Add 3 mins
+            
+            /* CLOSING SONG */
+            // Create a new row in the table
+            $lastRow = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );  
+
+            // Column 1: Display Assignment (4 inches wide)
+            $cellClosingText = $isTagalog ? "{$commonData['time']} • {$commonData['song_close']} at Pansarang Panalangin":
+                                            "{$commonData['time']} • {$commonData['song_close']} and Closing Prayer";
+            $cellClosing = $lastRow->addCell ( null, $cellStyle4in, $noSpace );  // Add an empty cell with a specific width
+            $cellClosing->addText ( $cellClosingText, $defaultFont );  // Add the opening text to the cell
+
+            // Column 2: Optional (1.27 inch wide)
+            // Just uncomment the next two lines and replace 'Your Optional Text' with whatever text you'd like to insert.
+            $cellOptional = $lastRow->addCell ( null, $cellStyle1_27in, $noSpace );  // Add a cell with a specific width
+            $cellOptional->addText ( 'Prayer:', $fontStyleItalic, $rightAlignedParagraph ); 
+            //$row3->addCell ( null, $cellStyle1_27in, $noSpace );  // The 2nd column remains blank
+
+            // Column 3: Display assignee's name (2 inches wide)
+            $cellAssignee = $lastRow->addCell ( null, $cellStyle2in, $noSpace );  // Add a cell for the assignee's name
+            $cellAssignee->addText ( $row['assignee'], $defaultFont );  // Add the assignee's name to the name cell
+
             $rowHR = $assignmentTable->addRow ( $desiredCellHeight, array ( "exactHeight" => true ) );;
             $cellHR = $rowHR->addCell ( null, $cellHRtag, $noSpace );
 

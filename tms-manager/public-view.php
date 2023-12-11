@@ -6,7 +6,7 @@
             It's only accessible by the COBE,<br> 
             OCLM Overseer, and/or their assistants.<br>
             If you need access to this page, please<br>
-            <a href="../public/contact-us" target="_blank" style="text-decoration: underline;">contact any of the admins</a>.<br>
+            <a href="https://khronos.pro/public/contact-us" target="_blank" style="text-decoration: underline;">contact any of the admins</a>.<br>
             Thank you!
         </h5>
         <hr>

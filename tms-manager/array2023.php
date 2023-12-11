@@ -8,8 +8,6 @@
 June 7, 2023
 Raymond Brian D. Hernandez 
 Carla Regine R. Hernandez
-
-This JW Workbook Parser is for the new 2024 format onwards (R.Hernandez)
 -->
 
 <?php
@@ -18,8 +16,8 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-require 'db.php';
-// require 'debug.php';
+require '../tms-manager/db.php';
+require '../tms-manager/debug.php';
 require '_functions.php';
 
 $congregation = $_SESSION['congregation'];
@@ -45,7 +43,7 @@ $congregation = $_SESSION['congregation'];
             // This is you loader animation, paste showLoader() on top of page,
             // then hideLoader() at the bottom of slow pages 
             include '../private/shared/loader.php';
-            echo "<script>showLoader();</script>"; 
+           //echo "<script>showLoader();</script>"; 
 
             include '../private/shared/navigation.php';
         ?>
@@ -56,131 +54,99 @@ $congregation = $_SESSION['congregation'];
 <?php
 
 if ( isset ( $_POST['url'] ) ) {
-    $session_array = array();
+
+    $url = filter_var ( $_POST['url'], FILTER_SANITIZE_URL );
     
     // Extract the year from the URL
-    $url = filter_var ( $_POST['url'], FILTER_SANITIZE_URL );
-    $year_pattern = '/\d{4}/'; // Matches a 4-digit year
-    if ( preg_match ( $year_pattern, $url, $matches ) ) {
-        $_SESSION['workbook_year'] = $matches[0]; 
+    $yearPattern = '/\d{4}/'; // Matches a 4-digit year
+    if ( preg_match ( $yearPattern, $url, $matches ) ) {
+        $_SESSION['workbook_year'] = $matches[0]; // The year will be in $matches[0]
     }
     $workbook_year = $_SESSION['workbook_year'];
 
     // Initialize cURL
     $curl = curl_init();
+
+    // Create a new DOMDocument
     $doc = new DOMDocument();
+
     $response = fetchContent ( $url, $curl );
     
     if ( !$response ) { 
         die ( "Failed to fetch the content from the URL" ); 
-    } 
+    }
 
+    // Load the HTML response
     @$doc->loadHTML ( $response );
+
+    // Create a new DOMXPath
     $xpath = new DOMXPath ( $doc );
 
-    // Parses the week's url from the workbook
-    $week_pages = $xpath->query( "//div[@class='syn-body sqs   ']/h2/a[@href]" );
+    // Search for the elements you're looking for
+    $elements = $xpath->query( "//div[@class='syn-body   textOnly accordionHandle ']/h2/a[@href]" );
 
-    foreach ( $week_pages as $week_page ) {
-        $link = $week_page->getAttribute( 'href' );
-        $week = $week_page->nodeValue;
-        // echo "PARSING: https://www.jw.org" . $link . $week . "<br>"; // FOR DEBUG
-    
-        // Set CURL
+    $session_array = array();
+
+    foreach ( $elements as $element ) {
+        $link = $element->getAttribute( 'href' );
+        $text = $element->nodeValue;
+
+        // Set the URL to scrape
         curl_setopt ( $curl, CURLOPT_URL, "https://www.jw.org" . $link );
+
+        // Return the response, rather than outputting it
         curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, true );
+
+        // Execute the cURL request
         $response = curl_exec ( $curl );
+
+        // Close the cURL session
         curl_close ( $curl );
+
+        // Create a new DOMDocument
         $doc = new DOMDocument();
+
+        // Load the HTML response
         @$doc->loadHTML ( $response );
+
+        // Create a new DOMXPath
         $xpath = new DOMXPath ( $doc );
 
-        // Find all parts (except opening prayer, mid song, and closing)
-        $parts_query    = "//h3[contains(@class, 'du-fontSize--base')]";
-        $parts_elements = $xpath->query ( $parts_query );
-        $parts          = [];
+        // Search for the parts and songs you're looking for
+        $elements = $xpath->query ( "//p[starts-with(@id, 'p') and contains(., 'min.')]" );  
 
-        // Check if any <h3> elements are found
-        if ( $parts_elements->length > 0 ) {
-            foreach ( $parts_elements as $part ) {
-                $data_pid = $part->getAttribute ( 'data-pid' );
-
-                // Calculate the data-pid for the corresponding <p> element
-                $p_next_data_pid = ( int ) $data_pid + 1;
-
-                // Find the <p> element with the calculated data-pid
-                $p_query   = "//p[@data-pid='$p_next_data_pid']";
-                $p_element = $xpath->query ( $p_query );
-
-                // Check if the <p> element is found and concatenate its content with the <h3> text
-                if ( $p_element->length > 0 ) {
-                    $p_text = trim ( $p_element->item(0)->nodeValue );
-                    $h3_text = trim ( $part->nodeValue );
-                    $parts[] = $h3_text . " " . $p_text;
-                }
-            }
-            // foreach ( $parts as $part ) { echo $part . "<br>"; } // FOR DEBUG
-        }
-
-        if ( $parts_elements->length > 0 ) {
+        if ( $elements->length > 0 ) {
             // All 3 songs
-            $find_songs = $xpath->query (
-                "//h3[a[contains(@class, 'pub-sjj') and (contains(., 'Awit') 
-                or contains(., 'Song'))] or span/a[contains(@class, 'pub-sjj') 
-                and (contains(., 'Awit') or contains(., 'Song'))]]"
-            );
-            // foreach ( $find_songs as $song ) { echo trim ( $song->nodeValue ) . "<br>"; } // FOR DEBUG
-        
+            $find_songs = $xpath->query ("//a[contains(@class, 'pub-sjj') and (contains(., 'Awit') or contains(., 'Song'))]" );
+
             // Bible Verse that week
-            $find_bible_verse = $xpath->query ( "//strong" );
-            $bible_verse      = $find_bible_verse[0]->nodeValue;
-            // echo trim ( $bible_verse ) . "<br>"; // FOR DEBUG
-        
+            $strongTags = $xpath->query ( "//strong" );
+            $verse =  $strongTags[0]->nodeValue;
+                       
             // Create an array to store the song data
             $songs_array = array();
-            $counter = 0;
-
             foreach ( $find_songs as $song ) {
-                $fullText = trim ( $song->textContent );
-                $counter++;
-
-                // For the first and third songs, use regex to extract "Awit Blg. XX" or "Song XX"
-                if ( $counter == 1 || $counter == 3 ) {
-                    if ( preg_match ( '/(Awit Blg\. \d+|Song \d+)/', $fullText, $matches ) ) {
-                        $songs_array[] = $matches[0];
-                        // echo $matches[0] . "<br>"; // FOR DEBUG
-                    } 
-                } 
-                // For the second song, keep the full text as is
-                else if ( $counter == 2 ) {
-                    $songs_array[] = $fullText;
-                    // echo $fullText . "<br>"; // FOR DEBUG
-                }
+                $songs_array[] = $song->textContent;
             }
-
-            $select_week = trim ( $week );
+            $select_week = trim ( $text );
             $song_open   = $songs_array[0];
             $song_mid    = $songs_array[1];
             $song_close  = $songs_array[2];
 
-            // echo $select_week . "<br>"; // FOR DEBUG
-            // echo $song_open . "<br>";// FOR DEBUG
-            // echo $song_mid . "<br>";// FOR DEBUG
-            // echo $song_close . "<br>";// FOR DEBUG
-
             // Check if the record already exists in the database
-            $query = "SELECT * FROM songs WHERE select_week = ?  AND congregation = ? AND song_open = ? AND song_mid = ? AND song_close = ?";
+            $query = "SELECT * FROM songs WHERE select_week = ? AND song_open = ? AND song_mid = ? AND song_close = ?";
             $stmt = $tmscon->prepare ( $query );
-            $stmt->bind_param ( "sssss", $select_week, $congregation, $song_open, $song_mid, $song_close );
+            $stmt->bind_param ( "ssss", $select_week, $song_open, $song_mid, $song_close );
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ( $result->num_rows > 0 ) {
+                // Record already exists, skip the insert
                 echo "Songs already exists, skipping insert!<br>";
             } else {
                 // Record doesn't exist, proceed with the insert
-                $query  = "INSERT INTO songs ( year, select_week, congregation, verse, song_open, song_mid, song_close ) ";
-                $query .= "VALUES ( '$workbook_year', '$select_week', '$congregation', '$bible_verse', '$song_open', '$song_mid', '$song_close' )";            
+                $query  = "INSERT INTO songs ( year, select_week, verse, song_open, song_mid, song_close ) ";
+                $query .= "VALUES ( '$workbook_year', '$select_week', '$verse', '$song_open', '$song_mid', '$song_close' )";            
                 $result = mysqli_query ( $tmscon, $query );
  
                 if ( ! $result ) {
@@ -189,35 +155,35 @@ if ( isset ( $_POST['url'] ) ) {
                     echo "Songs and bible verse added successfully<br>";
                 }
             }
-        
+
             // Add Opening Prayer to session array (Runs Once)
-            // $session_array[] = array (
-            //     'link'      => trim ( "https://www.jw.org" . $link ),
-            //     'week'      => $select_week,
-            //     'part'      => 'Opening Prayer',
-            //     'assignee'  => '',
-            //     'assistant' => ''
-            // );
+            $session_array[] = array (
+                'link'      => trim ( "https://www.jw.org" . $link ),
+                'week'      => trim ( $text ),
+                'part'      => 'Opening Prayer',
+                'assignee'  => '',
+                'assistant' => ''
+            );
 
             // Add each element to session array (Runs on a loop)
-            foreach ( $parts as $part ) {
+            foreach ( $elements as $element ) {
                 $session_array[] = array (
                     'link'      => trim ( "https://www.jw.org" . $link ),
-                    'week'      => $select_week,
-                    'part'      => trim ( $part ),
+                    'week'      => trim ( $text ),
+                    'part'      => trim ( $element->nodeValue ),
                     'assignee'  => '',
                     'assistant' => ''
                 );
             }
 
-            // // Add Closing Prayer to session array (Runs Once)
-            // $session_array[] = array (
-            //     'link'      => trim ( "https://www.jw.org" . $link ),
-            //     'week'      => $select_week,
-            //     'part'      => 'Closing Prayer',
-            //     'assignee'  => '',
-            //     'assistant' => ''
-            // );
+            // Add Closing Prayer to session array (Runs Once)
+            $session_array[] = array (
+                'link'      => trim ( "https://www.jw.org" . $link ),
+                'week'      => trim ( $text ),
+                'part'      => 'Closing Prayer',
+                'assignee'  => '',
+                'assistant' => ''
+            );
         }
     }
     
@@ -252,7 +218,7 @@ if ( isset ( $_POST['url'] ) ) {
     curl_close ( $curl );
     
     // Close database connection
-    $tmscon->close();
+    $tmscon->close();    
 } else {
     echo "No URL Posted";
 }

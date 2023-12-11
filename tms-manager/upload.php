@@ -16,12 +16,12 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-include ( 'db.php' );
-include ( '../public/debug.php' );
-include ( 'all_names.php' );
-require ( '../private/secure.php' );
+include 'db.php';
+include 'debug.php';
+include 'all_names.php';
+require '../private/secure.php';
 
-if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'Admin' ) {
+if ( $_SESSION['admin'] == 'Super Admin' || $_SESSION['admin'] == 'OCLM Admin' ) {
     $authorized = TRUE;
 } else {
     $authorized = FALSE;
@@ -57,7 +57,7 @@ $congregation = $_SESSION['congregation'];
 
     <div style="text-align:center">
         <h5><?php echo $congregation ?> Congregation </h5>
-        <h5>Upload JW Workbooks</h5>
+        <h5>Upload JW Workbooks (2024 or newer)</h5>
     </div>
 
     <!-- THIS PART IS ONLY SHOWN ON SUPER ADMINS AND ADMINS -->
@@ -74,15 +74,16 @@ $congregation = $_SESSION['congregation'];
 
             <?php 
 
-                $query = "SELECT DISTINCT week FROM assignments WHERE congregation='$congregation' ORDER BY id ASC";
+                $query = "SELECT DISTINCT week, year FROM assignments WHERE congregation='$congregation' ORDER BY id ASC";
                 $result = mysqli_query ( $tmscon, $query );
 
-                echo "Weeks available to edit for <b>" . $congregation . " Congregation:</b><br>";
-                echo "<select name='week_select' style='width:20%;'>";
-                echo "<option value=''>Select a week</option>";
+                echo "<b>Weeks available to edit for " . $congregation . " Congregation:</b><br><br>";
+                // echo "<select name='week_select' style='width:20%;'>";
+                // echo "<option value=''>Select a week</option>";
 
                 while ( $row = mysqli_fetch_assoc ( $result ) ) {
-                    echo "<option value='" . $row['week'] . "'>" . $row['week'] . "</option>";
+                    // echo "<option value='" . $row['week'] . "'>" . $row['week'] . ", " . $row['year'] . "</option>";
+                    echo "{$row['week']}, {$row['year']}<br>";
                 }
 
                 echo "</select><br>";

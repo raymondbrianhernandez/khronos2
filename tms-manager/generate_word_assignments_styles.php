@@ -9,15 +9,15 @@ $whiteBordersTable = array(
     'borderRightColor' => 'FFFFFF'
 );
 
-$assignmentTableStyle = array(
+$assignmentTableStyle = array (
     'width' => $availableWidth
 ) + $whiteBordersTable;
 
 // Cell styles
-$noSpace = array('spaceAfter' => 0);
+$noSpace = array ( 'spaceAfter' => 0 );
 
 // Define cell border styles with white borders
-$whiteBordersCell = array(
+$whiteBordersCell = array (
     'borderTopSize' => 0,
     'borderBottomSize' => 0,
     'borderLeftSize' => 0,
@@ -29,7 +29,7 @@ $whiteBordersCell = array(
 );
 
 // Column equivalent as <hr>
-$cellHRtag = array(
+$cellHRtag = array (
     'width' => $availableWidth,
     'cellRowSpan' => $desiredCellHeight, 
     'borderTopSize' => 6,
@@ -38,7 +38,7 @@ $cellHRtag = array(
 );
 
 // Column 1
-$cellStyle4in = array_merge($whiteBordersCell, array(
+$cellStyle4in = array_merge ( $whiteBordersCell, array (
     'valign' => 'center',
     'width' => 0.56 * $availableWidth, // 4 inches in twips relative to availableWidth
     'textAlign' => 'left',
@@ -46,7 +46,7 @@ $cellStyle4in = array_merge($whiteBordersCell, array(
 ));
 
 // Column 2
-$cellStyle1_27in = array_merge($whiteBordersCell, array(
+$cellStyle1_27in = array_merge ( $whiteBordersCell, array (
     'valign' => 'center',
     'width' => 0.17 * $availableWidth,  // 1.27 inches in twips relative to availableWidth
     'textAlign' => 'right',
@@ -56,7 +56,7 @@ $cellStyle1_27in = array_merge($whiteBordersCell, array(
 ));
 
 // Column 3
-$cellStyle2in = array_merge($whiteBordersCell, array(
+$cellStyle2in = array_merge ( $whiteBordersCell, array (
     'valign' => 'center',
     'width' => 0.27 * $availableWidth, // 2 inches in twips relative to availableWidth
     'textAlign' => 'left',
@@ -64,7 +64,7 @@ $cellStyle2in = array_merge($whiteBordersCell, array(
 ));
 
 // Column 1 and 2 Spanned
-$cellStyle1_2in = array_merge($whiteBordersCell, array(
+$cellStyle1_2in = array_merge ( $whiteBordersCell, array (
     'valign' => 'center',
     'width' => 0.73 * $availableWidth,
     'textAlign' => 'left',
@@ -73,42 +73,42 @@ $cellStyle1_2in = array_merge($whiteBordersCell, array(
 ));
 
 // Font style for italic text
-$fontStyleItalic = array(
+$fontStyleItalic = array (
     'name' => 'Cambria',
     'size' => 8,
     'italic' => true,
 );
 
-$rightAlignedParagraph = array(
+$rightAlignedParagraph = array (
     'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT,
     'spaceAfter' => 200
 );
 
-$defaultFont = array(
+$defaultFont = array (
     'name' => 'Cambria',
     'size' => 10
 );
 
-$cellTreasures = array(
+$cellTreasures = array (
     'bgColor' => 'silver',
     'gridSpan' => 2,
     'valign' => 'center'
 );
 
-$cellApplyYourself = array(
+$cellApplyYourself = array (
     'bgColor' => 'B8860B',
     'gridSpan' => 2,
     'valign' => 'center'
 );
 
-$cellLivingAsChristians = array(
+$cellLivingAsChristians = array (
     'bgColor' => 'FF0000',  // Red color
     'gridSpan' => 2,
     'valign' => 'center'
 );
 
-$fontStyleWhiteBold = array('
-    bold' => true, 
+$fontStyleWhiteBold = array (
+    'bold' => true, 
     'color' => 'white'
 );
 

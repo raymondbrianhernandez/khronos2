@@ -15,159 +15,76 @@ if ( session_status() !== PHP_SESSION_ACTIVE ) {
     session_start();
 }
 
-include '../public/debug.php';
-require '../tms-manager/db.php';
+include 'debug.php';
+require 'db.php';
+include '_functions.php';
+include '_globals.php';
 
-define ( 'DEFAULT_MEETING_START', '7:00' );
-define ( 'DEFAULT_MEETING_NEXT', '7:05' );
+$month        = trim ( explode ( " ", $_SESSION['week_select'] )[0] );
+$year         = $_SESSION['workbook_year'];
+$congregation = $_SESSION['congregation'];
+$start_time   = $_SESSION['midweek_time'];
+$language     = $_SESSION['language'];
+$isTagalog    = true;
 
-$month          = trim ( explode ( " ", $_SESSION['week_select'] )[0] );
-$congregation   = $_SESSION['congregation'];
-$start_time     = $_SESSION['midweek_time'];
-$language       = $_SESSION['language'];
-$isTagalog      = true;
-if ( $language != "Tagalog" ) { 
-    $isTagalog = false; 
-}
+include '_buttons.php';
 
-// isFullParts Logic
-if ( !isset ( $_SESSION['$isFullParts'] ) ) {
-    $_SESSION['$isFullParts'] = false;
-}
+//**************************** REPORT STARTS HERE ****************************/ 
 
-$isFullParts = $_SESSION['$isFullParts'];
-
-if ( isset ( $_POST['view_full_parts'] ) ) {
-    $_SESSION['$isFullParts'] = !$_SESSION['$isFullParts']; // Toggles
-}
-
-/**
- * trimParts Function
- * 
- * This function takes a string as an argument and trims anything after the first ')'.
- * If no ')' character is found in the string, the original string is returned.
- * 
- * @param string $inputString The input string that needs to be trimmed.
- * 
- * @return string The trimmed string with content only up to the first ')', or the original string if ')' is not found.
- */
-function trimParts ( $inputString ) {
-    // Find the position of the first ')'
-    $position = strpos ( $inputString, ')' );
-    
-    if ( $position !== false ) {
-        return substr ( $inputString, 0, $position + 1 );
-    }
-
-    return $inputString;
-}
-
-/**
- * getSongsForMonth Function
- * 
- * Retrieves all songs for a given month in the current year from the 'songs' table.
- * 
- * @param mysqli $con          The database connection object.
- * @param string $month        The desired month for which songs need to be retrieved.
- * 
- * @return mysqli_result       Result set containing songs for the specified month.
- */
-function getSongsForMonth ( $con, $month ) {
-    $stmt = $con->prepare ( "SELECT * FROM songs WHERE year = YEAR(CURDATE()) AND select_week LIKE ?" );
-    $like_value = $month . "%";
-    $stmt->bind_param ( "s", $like_value );
-    $stmt->execute();
-    return $stmt->get_result();
-}
-
-/**
- * getAssignmentsForWeek Function
- * 
- * Retrieves all assignments for a specified congregation and week in the current year from the 'assignments' table.
- * 
- * @param mysqli $con                  The database connection object.
- * @param string $congregation         The specific congregation's name or ID.
- * @param string $week                 The desired week for which assignments need to be retrieved.
- * 
- * @return mysqli_result               Result set containing assignments for the specified congregation and week.
- */
-function getAssignmentsForWeek ( $con, $congregation, $week ) {
-    $stmt = $con->prepare ( "SELECT * FROM assignments WHERE congregation = ? AND year = YEAR(CURDATE()) AND week = ?" );
-    $stmt->bind_param ( "ss", $congregation, $week );
-    $stmt->execute();
-    return $stmt->get_result();
-}
-
-echo "
-    <div class='button-container'>
-        <form method='post'>
-            <button type='submit' name='view_full_parts' class='button'>View/Hide Complete Parts</button>
-        </form>
-        <a class='button' href='generate_word.php' target='_blank'> Save as .docx </a>
-        <a class='button' href='report_debug.php' target=\"_blank\"> View as RAW </a>
-        <hr>
-    </div>";
-
-// Prepared statements to avoid SQL
-$song_result = getSongsForMonth ( $tmscon, $month );
+// Grab the songs
+$song_result = getSongsForMonth ( $tmscon, $month, $year, $congregation );
 
 if ( $song_result ) {
+    
     $weekCounter = 0; // Initialize a counter to keep track of the weeks
     
     while ( $week_row = mysqli_fetch_assoc ( $song_result ) ) {
-
-        $meetingStartTime = date ( "g:i", strtotime ( $week_row['time'] ) );
         
+        $meetingStartTime = date ( "g:i", strtotime ( $week_row['time'] ) );
+        // echo "{$meetingStartTime}<br>";
+
         // Fetch common data for the current week
         $commonData = [
             'week' => $week_row['select_week'],
             'date' => date ( "F j, Y", strtotime ( $week_row['date'] ) ),
-            // add 5 minutes for opening song/prayer
-            'time' => date ( "g:i", strtotime ( $week_row['time'] ) + ( 5 * 60 ) ), 
+            'time' => date ( "g:i", strtotime ( $week_row['time'] ) + ( 5 * 60 ) ), // add 5 minutes for opening song/prayer
             'verse' => $week_row['verse'],
             'song_open' => $week_row['song_open'],
             'song_mid' => $week_row['song_mid'],
             'song_close' => $week_row['song_close'],
         ];
-        
+        // print_r ( $commonData );
+
         // January 1, 1970 means midweek date is not set yet
-        if ( $commonData['date'] === "January 1, 1970" ) {
+        if ( stringToDate ( $commonData['date'] ) <= stringToDate ( "January 1, 1970" ) ) {
             $commonData['date'] = "No date set yet";
         }
 
         // 12:00 means time is not set yet, so 7pm is default
-        if ( $meetingStartTime === "12:00" ) {
+        if ( timeToInt ( $meetingStartTime ) < timeToInt ( DEFAULT_MEETING_START ) ) {
             $meetingStartTime = DEFAULT_MEETING_START;
             $commonData['time'] = DEFAULT_MEETING_NEXT;
         }
 
+        $startTime = strtotime ( $commonData['time'] ); // Initialize the start time
+
         // Display common header information for the current week
-        echo "<table>";
-        echo "  <tr>";
-        echo "    <td class='congregation'><h3>" . strtoupper ( $congregation ) . " CONGREGATION </h3></td>";
-        echo "    <td class='schedule-header'>";
-        echo $isTagalog ? 
-            "<h3> Iskedyul ng Pulong sa Gitnang Sanlinggo </h3>" :
-            "<h3> Midweek Meeting Schedule </h3>";
-        echo "    </td>";
-        echo "  </tr>";
-        echo "  <tr>";
-        echo "    <td class='col-1'><b>{$commonData['date']} | {$commonData['verse']}</b></td>";
-        echo "  </tr>";
-        echo "</table>";
+        include '_header.php';
 
-        // Prepared statements to avoid SQL
-        $result = getAssignmentsForWeek ( $tmscon, $congregation, $commonData['week']);
-
+        // Main Table Starts Here
+        $result = getAssignmentsForWeek ( $tmscon, $congregation, $commonData['week'], $year );
+                
         if ( $result ) { 
-            // Display the assignment details for the current week in a table
-            echo "<table class='report'>";
-            
             $assignmentCounter = 0; // Initialize a counter to keep track of assignments
             $partCounter = 0; // Initialize a counter to keep track of the parts per week
-        
+
+            echo "<table class='report'>";
+            
             // Chairman, Auxiliary Classroom Counselor and Opening Song/Prayer
             $temp_row = mysqli_fetch_assoc ( $result );
+            $result->data_seek(0);
+            $prayer = $isTagalog ? "Panalangin:" : "Prayer:";
+            $and_prayer = $isTagalog ? "at Panalangin:" : "and Prayer:";
             echo "<tr>";
             echo "  <td class='col-1'>  </td>";
             echo "  <td class='col-2'> Chairman: </td>"; 
@@ -175,79 +92,114 @@ if ( $song_result ) {
             echo "</tr>";
             echo "<tr>";
             echo "  <td class='col-1'>  </td>";
-            if ( $isTagalog ) {
-                echo "  <td class='col-2'> Tagapayo sa Karagdagang Klase: </td>";
-            } else {
-                echo "  <td class='col-2'> Auxiliary Classroom Counselor </td>";
-            }
-            
+            $auxCouncilor = $isTagalog ? "Tagapayo sa Karagdagang Klase:" : "Auxiliary Classroom Counselor";
+            echo "  <td class='col-2'> $auxCouncilor </td>";
             echo "  <td class='col-3'> {$temp_row['advisor']} </td>"; 
             echo "</tr>";
             echo "<tr>";
-            echo "  <td class='col-1'>{$meetingStartTime}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$commonData['song_open']} and Opening Prayer </td>";
-            echo "  <td class='col-2'> Prayer: </td>";
+            echo "  <td class='col-1'>{$meetingStartTime}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$commonData['song_open']} {$and_prayer} </td>";
+            echo "  <td class='col-2'> {$prayer} </td>";
             echo "  <td class='col-3'> {$temp_row['assignee']} </td>";  
             echo "</tr>";
 
-            $firstAssignment = true; // Initialize the flag for the first assignment
-            $startTime = strtotime ( $commonData['time'] ); // Initialize the start time
-            $loopCount = 0;
+            // Opening Comments (1 min.)
+            echo "<tr>";
+            $openingPart = $isTagalog ? "Pambungad na Komento (1 min.)" : "Opening Comments (1 min.)";
+            echo "  <td class='col-1'>{$commonData['time']}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$openingPart} </td>";
+            preg_match ( '/\((\d+)\W+min\.\)/', $openingPart, $matches );
+            include 'extract_time.php';
+            echo "  <td class='col-2'></td>";
+            echo "  <td class='col-3'></td>";  
+            echo "</tr>";
+            echo "<tr>";
+            echo "  <td class='col-1-2' colspan=2 style='background-color: silver; color: white;'> &nbsp;&nbsp;";
+            $treasures = $isTagalog ? "<b>KAYAMANAN MULA SA SALITA NG DIYOS</b>" : "<b>TREASURES FROM GOD'S WORD</b>";
+            echo $treasures;
+            echo "  </td>";
+            echo "  <td class='col-3'></td>";
+            echo "</tr>";
 
-            // Fetch all results first
+            // Fetch all parts first
             $rows = mysqli_fetch_all ( $result, MYSQLI_ASSOC );
+            mysqli_data_seek ( $result, 0 );
 
-            // Count the total rows
-            $totalRows = count ( $rows );
+            // Count the total parts
+            $totalParts = count ( $rows );
+
+            include '_livingAsChristiansIndex.php';
             
-            for ( $i = 0; $i < $totalRows; $i++ ) {
+            for ( $i = 0; $i < $totalParts; $i++ ) {
                 $row = $rows[$i];
-                $loopCount++;
+                //echo "Debug: Iteration $i - Part: {$row['part']}<br>";
 
                 // Extract duration time from each assignment
+                preg_match ( '/\((\d+)\W+min\.\)/', $row['part'], $matches );
                 include 'extract_time.php';
-
-                // At the last loop, dsiplay closing song and prayer
-                if ( $assignmentCounter == $totalRows-1 ) {
-                    $closingTime = date ( "g:i", strtotime ( $commonData['time'] ) );
-                    echo "  <tr>";
-                    echo "    <td class='col-1'> {$closingTime}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$commonData['song_close']} and {$row['part']} </td>";
-                    echo "    <td class='col-2'> Prayer: </td>";
-                    echo "    <td class='col-3'> {$row['assignee']} </td>";
-                    echo "  </tr>";
-                    echo "</table>";
-                    break;
-                }
 
                 // Main loop of assignments
                 echo "<tr>";
+
+                // Column 1 - Parts Title
+                $part = !$isFullParts ? trimParts ( $row['part'] ) : $row['part'];
+                echo "<td class='col-1'>{$commonData['time']}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$part}</td>";
                 
-                if ( !$isFullParts ) {
-                    echo "  <td class='col-1'>{$commonData['time']}&nbsp;&nbsp;&bull;&nbsp;&nbsp;".trimParts($row['part'])."</td>";
-                } else {
-                    echo "  <td class='col-1'>{$commonData['time']}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$row['part']}</td>";
-                }
+                // Column 2 - Decription of assignee (Student, Assitant, Conductor, or Reader)
+                $lowercasePart = strtolower ( $row['part'] );
+
+                if 
+                ( 
+                    ( strpos ( $lowercasePart, 'pagbabasa ng bibliya' ) !== false ) 
+                    ||
+                    ( strpos ( $lowercasePart, 'bible reading' ) !== false ) 
+                    ||
+
+                    ( 
+                        ( strpos ( $lowercasePart, 'pahayag' ) !== false ) 
+                        && 
+                        ( 
+                            ( strpos ( $lowercasePart, 'th' ) !== false ) 
+                            || 
+                            ( strpos ( $lowercasePart, 'ipaliwanag ang paniniwala mo' !== false )
+                        )
+                      )
+                    )
+                    ||
+                    ( 
+                        ( strpos ( $lowercasePart, 'talk' ) !== false ) 
+                        && 
+                        ( 
+                            ( strpos ( $lowercasePart, 'th' ) !== false ) 
+                            || 
+                            ( strpos ( $lowercasePart, 'explaining your beliefs' !== false )
+                        )
+                      )
+                    )
+                ) { echo $isTagalog ? "<td class='col-2'> Estudyante: </td>" : "<td class='col-2'> Student: </td>";
                 
-                if ( $partCounter == 3 ) { // Bible Reader first
-                    echo $isTagalog ? "<td class='col-2'> Estudyante: </td>" : "<td class='col-2'> Student: </td>"; 
+                } else if (
+                    strpos ( $lowercasePart, 'pagpapasimula ng pakikipag-usap' ) !== false ||
+                    strpos ( $lowercasePart, 'starting a conversation' ) !== false ||
                     
-                } elseif ( $partCounter > 2 && $partCounter < 7 ) {
-                    // If an assignment contains the words "Talk" then it doesn't need a student assistant
-                    if ( ( strpos ( $row['part'], 'Pahayag') !== false 
-                        || strpos ( $row['part'], 'Talk' ) !== false ) 
-                        && ( $partCounter == 6 ) ) {
-                        echo $isTagalog ? "<td class='col-2'> Estudyante: </td>" : "<td class='col-2'> Student: </td>";
-                    }
-                    else {
-                        echo $isTagalog ? "<td class='col-2'> Estudyante/Katulong: </td>" : "<td class='col-2'> Student/Assistant: </td>";
-                    }
-                } elseif ( $assignmentCounter == $totalRows - 3 ) { // CBS
-                    echo $isTagalog ? 
-                        "<td class='col-2'> Konduktor/Tagabasa: </td>" : 
-                        "<td class='col-2'> Conductor/Reader: </td>";
+                    strpos ( $lowercasePart, 'pagdalaw-muli' ) !== false ||
+                    strpos ( $lowercasePart, 'following up' ) !== false ||
+                    
+                    strpos ( $lowercasePart, 'paggawa ng mga alagad' ) !== false ||
+                    strpos ( $lowercasePart, 'making disciples' ) !== false ||
+
+                    strpos ( $lowercasePart, 'ipaliwanag ang paniniwala mo' ) !== false ||
+                    strpos ( $lowercasePart, 'explaining your beliefs' ) !== false
+                    ) {
+                    echo $isTagalog ? "<td class='col-2'> Estudyante/Katulong: </td>" : "<td class='col-2'> Student/Assistant: </td>";
+                } else if ( 
+                    strpos ( $lowercasePart, 'pag-aaral ng kongregasyon sa bibliya' ) !== false ||
+                    strpos ( $lowercasePart, 'congregation bible study' ) !== false 
+                    ) {
+                    echo $isTagalog ? "<td class='col-2'> Konduktor/Tagabasa: </td>" : "<td class='col-2'> Conductor/Reader: </td>";
                 } else {
-                    echo "  <td class='col-2'> </td>";
-                }
+                    echo "<td class='col-2'> </td>";
+                }                  
                 
+                // Column 3 - Name of Assignee / Assistant
                 if ( $row['assistant'] == " " || !$row['assistant'] ) {
                     echo "<td class='col-3'>{$row['assignee']}</td>";
                 } else {
@@ -258,21 +210,9 @@ if ( $song_result ) {
                 // Increment the assignment counter
                 $assignmentCounter++;
                 $partCounter++;
-        
-                // Check if it's the 2nd assignment, and insert the additional row
-                if ( $assignmentCounter == 1 ) {
-                    echo "<tr>";
-                    echo "  <td class='col-1-2' colspan=2 style='background-color: silver; color: white;'> &nbsp;&nbsp;";
-                    echo $isTagalog ?
-                        "<b> KAYAMANAN MULA SA SALITA NG DIYOS </b>":
-                        "<b> TREASURES FROM GOD'S WORD </b>";
-                    echo "  </td>";
-                    echo "  <td class='col-3'></td>";
-                    echo "</tr>";
-                }
-        
+
                 // Check if it's the 5th assignment and insert the additional row
-                if ( $assignmentCounter == 4 ) {
+                if ( $assignmentCounter == 3 ) {
                     echo "<tr>";
                     echo "  <td colspan=2 style='width:80%; background-color: #B8860B; color: white;'>&nbsp;&nbsp;";
                     echo $isTagalog ?
@@ -284,12 +224,10 @@ if ( $song_result ) {
                 }
 
                 // Check if it's the 7th assignment and insert the additional row
-                if ( $assignmentCounter == 7 ) {
+                if ( $i == $indexToKeep - 1 ) {
                     echo "<tr>";
                     echo "  <td colspan=2 style='width:80%; background-color: red; color: white;'>&nbsp;&nbsp;";
-                    echo $isTagalog ?
-                        "<b> PAMUMUHAY BILANG KRISTIYANO </b>" :
-                        "<b> LIVING AS CHRISTIANS </b>";
+                    echo $isTagalog ? "<b> PAMUMUHAY BILANG KRISTIYANO </b>" : "<b> LIVING AS CHRISTIANS </b>";
                     echo "  </td>";
                     echo "  <td style='width:20%'></td>";
                     echo "</tr>";
@@ -300,7 +238,29 @@ if ( $song_result ) {
                     echo "  <td style='width:80%'>{$commonData['time']}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$commonData['song_mid']}</td>";  
                     echo "</tr>";
                 }
-            } /** END for ( $i = 0; $i < $totalRows; $i++ ) **/
+
+                $closingTime = date ( "g:i", ( strtotime ( $commonData ['time'] ) + ( 30 * 60 ) ) );
+            }
+
+            echo "<tr>";
+            $closingPart = $isTagalog ? "Pangwakas na Komento (3 min.)" : "Concluding Comments (3 min.)";
+            echo "  <td class='col-1'>{$closingTime}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$closingPart} </td>";
+
+            preg_match ( '/\((\d+)\W+min\.\)/', $closingPart, $matches );
+            include 'extract_time.php';
+            
+            echo "  <td class='col-2'></td>";
+            echo "  <td class='col-3'></td>";  
+            echo "</tr>";
+            
+            $closingTime = date ( "g:i", ( strtotime ( $commonData ['time'] ) + ( 3 * 60 ) ) );
+            
+            echo "  <tr>";
+            echo "    <td class='col-1'> {$closingTime}&nbsp;&nbsp;&bull;&nbsp;&nbsp;{$commonData['song_close']} {$and_prayer} </td>";
+            echo "    <td class='col-2'> {$prayer} </td>";
+            echo "    <td class='col-3'> {$row['assignee']} </td>";
+            echo "  </tr>";
+            echo "</table>";
         
             // Free the result set for the current week
             mysqli_free_result ( $result );
